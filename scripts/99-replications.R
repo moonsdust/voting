@@ -1,19 +1,19 @@
 #### Preamble ####
-# Purpose: Replicated graphs from... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Replicated graphs from 
+# "Who Does Voter ID Keep from Voting?" (2021)
+# Author: Emily Su
+# Date: 13 February 2024
+# Contact: em.su@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: tidyverse and ggplot2 has been installed by running 00-install_packages.R
 
 
 #### Workspace setup ####
 library(tidyverse)
-# [...UPDATE THIS...]
+library(ggplot2)
+
 
 #### Load data ####
-# [...ADD CODE HERE...]
 
 
 
