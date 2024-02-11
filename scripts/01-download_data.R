@@ -19,4 +19,4 @@ reason_data <- read_dta("data/raw_data/fraga_miller_reasons_replication.dta")
 # Save county data into CSV format
 write_csv(county_data, "data/raw_data/county_data.csv")
 # Save reason data into CSV format
-write_csv(county_data, "data/raw_data/reason_data.csv")
+write_csv(reason_data, "data/raw_data/reason_data.csv")
