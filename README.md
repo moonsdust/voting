@@ -2,6 +2,9 @@
 
 ## Overview
 
+# Important Note
+**About rid_data.csv**: This CSV file is currently not in data/raw_data due to its file size exceeding 100MB. To download rid_data.csv, please read the comment made in the script 01-download_data.R located in the following path: scripts/01-download_data.R.
+
 ## File Structure
 
 The repo is structured as:
