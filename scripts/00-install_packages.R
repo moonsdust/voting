@@ -9,6 +9,7 @@
 #### Workspace setup ####
 ## Installing packages (only needs to be done once per computer)
 install.packages("tidyverse") # Contains data-related packages
+install.packages("haven") # Used to read in Stata DTA files 
 install.packages("knitr") # To make tables
 install.packages("janitor") # To clean datasets
 install.packages("dplyr")
