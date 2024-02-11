@@ -15,8 +15,9 @@ library(haven)
 
 #### Download data #### 
 # NOTE: FragaMiller_JOP_ReplicationData.RData is currently too large to be uploaded
-# through GitHub (it exceeds 100mb) and it is not possible to download the file using the Dataverse API.
-# Please download the file here https://dataverse.harvard.edu/file.xhtml?fileId=4328150
+# through GitHub (it exceeds 100mb) and it is not possible to download the file using 
+# the Dataverse API. To obtain this RData file, please download the file here 
+# https://dataverse.harvard.edu/file.xhtml?fileId=4328150
 # and upload it to the raw_data folder located in the data folder 
 
 # NOTE: If you unable to download data from dataverse, access the data through 
