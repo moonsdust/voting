@@ -172,8 +172,9 @@ combined_figure_A1_data |>
   # to figure out how to put labels on the left and use facet_grid
   facet_grid(vars(race), switch = "y") +
   guides(x = guide_axis(angle = 0), ) +
-  theme(legend.position = "bottom") + 
-  ggtitle("Figure A1") 
+  theme(plot.title = element_text(size = 12, face = "bold"),
+        axis.title=element_text(size = 10, face = "bold")) + 
+  ggtitle("Impediments of Texas voters who filed RIDs in 2016 by Race")
 
 # Table
 combined_figure_A1_data |>
@@ -225,16 +226,147 @@ figure_2_rep_data |>
   mutate(reasons = fct_reorder(reasons, desc(percent))) |>
   ggplot(mapping = aes(x = reasons, y = percent)) +
   geom_bar(stat="identity") +
-  ggtitle("Figure 2: Impediments cited by Texas voters in 2016") +
+  ggtitle("Impediments of Texas voters in 2016") +
   coord_flip() + 
-  theme_bw() +
-  labs(x = "Reasons", y = "Percent")
+  theme_minimal() +
+  labs(x = "Reasons", y = "Percent") +
+  theme(plot.title = element_text(size = 12, face = "bold"),
+        axis.title = element_text(size = 10, face = "bold")) 
 
 # Table
 figure_2_rep_data |> 
   kable()
 
 
-# Figure 3
+# Figure A3
+# https://dataverse.harvard.edu/file.xhtml?fileId=4328141&version=1.0
+figure_A3_rep_all_data <- cleaned_reason_data |>
+  select(relocation, id_capable, hardship, black, latino, white)
+
+# White 
+figure_A3_rep_white_data <- figure_A3_rep_all_data |>
+  # Filter for white
+  filter(white == 1) |>
+  # Remove other races
+  select(-c(black, latino)) |>
+  # Get percentages 
+  mutate( 
+    "Relocation" = round(sum(relocation) / n(), 2),
+    "Hardship" = round(sum(hardship) / n(), 2),
+    "ID-Capable" = round(sum(id_capable) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(relocation, id_capable, hardship, white)) |>
+  # Have the percentages only show up in 1 row
+  unique() |>
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Relocation", 
+                "Hardship", 
+                "ID-Capable"),
+    # Add column for race
+    race = "white"
+  ) 
 
 
+# Black 
+figure_A3_rep_black_data <- figure_A3_rep_all_data |>
+  # Filter for black
+  filter(black == 1) |>
+  # Remove other races
+  select(-c(white, latino)) |>
+  # Get percentages 
+  mutate( 
+    "Relocation" = round(sum(relocation) / n(), 2),
+    "Hardship" = round(sum(hardship) / n(), 2),
+    "ID-Capable" = round(sum(id_capable) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(relocation, id_capable, hardship, black)) |>
+  # Have the percentages only show up in 1 row
+  unique() |>
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Relocation", 
+                "Hardship", 
+                "ID-Capable"),
+    # Add column for race
+    race = "black"
+  ) 
+
+# Black 
+figure_A3_rep_latinx_data <- figure_A3_rep_all_data |>
+  # Filter for latino
+  filter(latino == 1) |>
+  # Remove other races
+  select(-c(white, black)) |>
+  # Get percentages 
+  mutate( 
+    "Relocation" = round(sum(relocation) / n(), 2),
+    "Hardship" = round(sum(hardship) / n(), 2),
+    "ID-Capable" = round(sum(id_capable) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(relocation, id_capable, hardship, latino)) |>
+  # Have the percentages only show up in 1 row
+  unique() |>
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Relocation", 
+                "Hardship", 
+                "ID-Capable"),
+    # Add column for race
+    race = "latinx"
+  ) 
+
+# Combine all
+# Referenced code from here: https://help.qresearchsoftware.com/hc/en-us/articles/4446615637775-How-to-Merge-Tables-Using-R
+combined_figure_A3_data <- rbind(figure_A3_rep_white_data, figure_A3_rep_black_data)
+combined_figure_A3_data <- rbind(combined_figure_A3_data, figure_A3_rep_latinx_data)
+
+
+# Graph
+# Referenced code from https://r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
+# To figure out how to sort 
+combined_figure_A3_data |>
+  mutate(reasons = fct_reorder(reasons, desc(percent))) |>
+  ggplot(mapping = aes(x = reasons, y = percent)) +
+  geom_bar(stat="identity") +
+  theme_minimal() +
+  labs(
+    x = "Reasons",
+    y = "Percent"
+  ) +
+  coord_flip() + 
+  # Referenced code from https://github.com/tidyverse/ggplot2/issues/2762
+  # to figure out how to put labels on the left and use facet_grid
+  facet_grid(vars(race), switch = "y") +
+  guides(x = guide_axis(angle = 0), ) +
+  theme(plot.title = element_text(size = 12, face = "bold"),
+        axis.title=element_text(size = 10, face = "bold")) + 
+  ggtitle("General Impediments of Texas voters who filed RIDs in 2016 by Race")
+
+# Table
+combined_figure_A3_data |>
+  kable()
