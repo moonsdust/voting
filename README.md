@@ -5,11 +5,7 @@
 This repository contains a replication of the paper, "Who Does Voter ID Keep from Voting?" by Bernard L. Fraga and Michael G. Miller (2022): https://doi.org/10.1086/716282. 
 
 ## Important Notes
-**Data from Paper**: Not all data was able to be retrieved using the `Dataverse` API. Please
-read the comments in scripts/01-download_data.R for more information. The datasets from the 
-paper can be accessed through this link: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/X5ALUA
-
-**About rid_data.csv**: This CSV file is currently not in data/raw_data due to its file size exceeding 100MB. To download rid_data.csv, please read the comment made in the script 01-download_data.R located in the following path: scripts/01-download_data.R.
+**Data from Paper**: scripts/01-download_data.R retrieves the necessary data from the paper using the `Dataverse` API but not all files can be uploaded due to their file size exceeding 100MB. All the files and data from the paper can be found here:  https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/X5ALUA
 
 ## File Structure
 
