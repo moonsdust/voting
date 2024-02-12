@@ -20,7 +20,9 @@ cleaned_reason_data <- reason_data |>
       if_else(
         (black == 0 & latino == 0 & asian == 0 & other_race == 0), 1, 0
         )
-  )
+  ) |>
+  # Remove columns that we don't need for our analysis 
+  select(-c(age_sq, race, bc2, utility2, bank2, govcheck2, other_id, vote_cert))
     
 #### Save data ####
 write_csv(cleaned_reason_data, "data/analysis_data/cleaned_reason_data.csv")
