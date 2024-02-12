@@ -5,7 +5,6 @@
 # Contact: em.su@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: 00-install_packages.R has been ran first to install packages below.
-# and haven. 
 
 #### Workspace setup ####
 library(dataverse)
