@@ -6,7 +6,7 @@ This repository contains a replication of the paper, "Who Does Voter ID Keep fro
 
 ## Important Notes
 **Data from Paper**: Not all data was able to be retrieved using the `Dataverse` API. Please
-read the comments in scripts/01-download_data.R for more information and the datasets from the 
+read the comments in scripts/01-download_data.R for more information. The datasets from the 
 paper can be accessed through this link: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/X5ALUA
 
 **About rid_data.csv**: This CSV file is currently not in data/raw_data due to its file size exceeding 100MB. To download rid_data.csv, please read the comment made in the script 01-download_data.R located in the following path: scripts/01-download_data.R.
