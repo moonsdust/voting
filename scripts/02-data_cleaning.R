@@ -8,7 +8,6 @@
 
 #### Workspace setup ####
 library(tidyverse)
-library(janitor)
 
 #### Clean data ####
 reason_data <- read_csv("data/raw_data/reason_data.csv", show_col_types = FALSE)
