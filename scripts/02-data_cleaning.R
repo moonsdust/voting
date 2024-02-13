@@ -75,4 +75,4 @@ cleaned_map_data$count[is.na(cleaned_map_data$count)] <- 0
 # Save the cleaned reason data
 write_csv(cleaned_reason_data, "data/analysis_data/cleaned_reason_data.csv")
 # Save the cleaned map data
-write_csv(cleaned_reason_data, "data/analysis_data/cleaned_map_data.csv")
+write_csv(cleaned_map_data, "data/analysis_data/cleaned_map_data.csv")
