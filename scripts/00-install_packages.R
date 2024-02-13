@@ -14,6 +14,6 @@ install.packages("knitr") # To make tables
 install.packages("janitor") # To clean datasets
 install.packages("dplyr")
 install.packages("ggplot2") # To make graphs
-install.packages("maps") # For making maps
+install.packages("sf") # For making maps
 install.packages("readr")
 install.packages("dataverse") # Dataverse API to obtain datasets
