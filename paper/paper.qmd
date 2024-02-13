@@ -1,7 +1,7 @@
 ---
 title: "Voting"
 author: "Emily Su"
-thanks: "Data and code are available at: https://github.com/moonsdust/toronto-collisions. The replication on the Social Science Reproduction platform can be found here: https://www.socialsciencereproduction.org/reproductions/c0db16d9-e70e-4bbc-85d2-f7137a0e8c47/index"
+thanks: "Data and code are available at: https://github.com/moonsdust/toronto-collisions. The replication on the Social Science Reproduction Platform can be found here: https://www.socialsciencereproduction.org/reproductions/c0db16d9-e70e-4bbc-85d2-f7137a0e8c47/index"
 date: today
 date-format: "YYYY MMMM D"
 abstract: "Abstract."
