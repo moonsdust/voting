@@ -13,6 +13,11 @@ library(readr)
 library(haven)
 
 #### Download data #### 
+# https://data.texas.gov/dataset/County-Map-StratMap_County_poly/m3yf-ffwm/about_data
+# Unable to download "County Map - StratMap_County_poly" in CSV format through API 
+# without app_token, email, and password.
+# The file is located in data/raw_data under the name county_boundary.csv
+
 # NOTE: FragaMiller_JOP_ReplicationData.RData is currently too large to be uploaded
 # through GitHub (it exceeds 100mb) and it is not possible to download the file using 
 # the Dataverse API. To obtain this RData file, please download the file here 

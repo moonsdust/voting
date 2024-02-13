@@ -24,7 +24,7 @@ library(knitr)
 cleaned_reason_data <- read_csv("../../data/analysis_data/cleaned_reason_data.csv", show_col_types = FALSE)
 ```
 # Introduction
-This report contains the figures replicated from Bernard L. Fraga and Michael G. Miller's paper, "Who Does Voter ID Keep from Voting?" [@citeVoterIDPaper]. In our replication, the statistical programming language, R [@citeR], `dataverse` [@citedataverse], `tidyverse` [@citetidyverse], `ggplot2` [@citeggplot2], `haven` [@citehaven], `readr` [@citereadr], and `knitr` [@citeknitr] were used to retrieve, clean, and analyze the datasets to create the figures and tables.
+This report contains the figures replicated from Bernard L. Fraga and Michael G. Miller's paper, "Who Does Voter ID Keep from Voting?" [@citeVoterIDPaper]. In our replication, the statistical programming language, R [@citeR], `dataverse` [@citedataverse], `tidyverse` [@citetidyverse], `ggplot2` [@citeggplot2], `haven` [@citehaven], `readr` [@citereadr], `janitor` [@citejanitor], and `knitr` [@citeknitr] were used to retrieve, clean, and analyze the datasets to create the figures and tables.
 
 # Figure A1 
 The following is the replicated graph ([@fig-a1]) and a corresponding table ([@tbl-a1]) from the paper that was put online in their reproduction package [@citeVoterIDPaper]. The original graph can be found here: https://dataverse.harvard.edu/file.xhtml?fileId=4328158&version=1.0.
