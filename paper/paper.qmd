@@ -1,7 +1,7 @@
 ---
 title: "Voting"
 author: "Emily Su"
-thanks: "Data and code are available at: https://github.com/moonsdust/toronto-collisions. The replication on the Social Science Reproduction Platform can be found here: https://www.socialsciencereproduction.org/reproductions/c0db16d9-e70e-4bbc-85d2-f7137a0e8c47/index"
+thanks: "Data and code are available at: https://github.com/moonsdust/toronto-collisions. The replication on Social Science Reproduction Platform can be found here: https://www.socialsciencereproduction.org/reproductions/c0db16d9-e70e-4bbc-85d2-f7137a0e8c47/index"
 date: today
 date-format: "YYYY MMMM D"
 abstract: "Abstract."
@@ -51,8 +51,14 @@ cleaned_map_data <- st_as_sf(texas_county, wkt = "the_geom")
 
 
 # Data {#sec-data}
+## Source 
 
+
+## Methodology
 The datasets were retrieved, simulated, cleaned, analyzed, and tested using the `R` programming language [@citeR], `tidyverse` [@citetidyverse], `haven` [@citehaven], `knitr` [@citeknitr], `janitor` [@citejanitor], `dplyr` [@citedplyr], `ggplot2` [@citeggplot2], `sf` [@citesf], `readr` [@citereadr], and `dataverse` [@citedataverse]. 
+
+## Measurements
+
 
 # Results {#sec-result}
 ```{r}
@@ -83,7 +89,7 @@ ggplot(cleaned_map_data) +
     aes(label = county),
     check_overlap = TRUE,
     size = 2, 
-    color = "pink"
+    color = "white"
     ) +
     theme(plot.title = element_text(size = 9, face = 'bold'), 
           plot.subtitle = element_text(size = 9),
@@ -115,7 +121,7 @@ Due to the length of the datasets horizontally, presenting glimpses of the datas
 ## Tables from Results {#sec-tablesfromresults}
 ```{r}
 #| label: tbl-votermap
-#| tbl-cap: Number of United States election voters across Texas counties in 2016 without proper ID
+#| tbl-cap: Number of United States election voters across Texas counties in 2016 without IDs
 #| echo: false
 #| warning: false
 #| message: false

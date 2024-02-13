@@ -30,12 +30,11 @@ cleaned_reason_data <- reason_data |>
 # Dataset 2
 # Expected Columns: the_geom | county | count 
 
-# Change values in a certain column to be lowercase
-# Reference code from https://stackoverflow.com/questions/30429039/r-convert-list-to-lowercase
-# Function to change values all to lowercase
-toLowerValues <- function(col) {
+# Function to change values in a certain column to uppercase for the first letter of each word
+# Referenced https://www.geeksforgeeks.org/convert-first-letter-of-every-word-to-uppercase-in-r-programming-str_to_title-function/
+toTitle <- function(col) {
   for (i in seq(col)) {
-    col[i] <- tolower(col[i])
+    col[i] <- str_to_title(col[i])
   }
   return(col)
 }
@@ -60,9 +59,9 @@ cleaned_map_data <- texas_county_boundary_data |>
     county = name
   )
 
-# Change county names to lowercase
-temp_count_data$county <- toLowerValues(temp_count_data$county)
-cleaned_map_data$county <- toLowerValues(cleaned_map_data$county)
+# Change county names to be uppercase for only the first word of each part of its name
+temp_count_data$county <- toTitle(temp_count_data$county)
+cleaned_map_data$county <- toTitle(cleaned_map_data$county)
 
 # join temp_count_data with cleaned_map_data
 cleaned_map_data <- cleaned_map_data |>
