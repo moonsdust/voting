@@ -1,5 +1,5 @@
 ---
-title: "Voting"
+title: "Voting without ID"
 author: "Emily Su"
 thanks: "Data and code are available at: https://github.com/moonsdust/toronto-collisions. The replication on Social Science Reproduction Platform can be found here: https://www.socialsciencereproduction.org/reproductions/c0db16d9-e70e-4bbc-85d2-f7137a0e8c47/index"
 date: today
@@ -121,7 +121,7 @@ Due to the length of the datasets horizontally, presenting glimpses of the datas
 ## Tables from Results {#sec-tablesfromresults}
 ```{r}
 #| label: tbl-votermap
-#| tbl-cap: Number of United States election voters across Texas counties in 2016 without IDs
+#| tbl-cap: Number of voters across Texas counties during 2016 United States election without proper ID
 #| echo: false
 #| warning: false
 #| message: false
