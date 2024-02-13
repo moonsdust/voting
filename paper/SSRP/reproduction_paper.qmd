@@ -1,25 +1,42 @@
-#### Preamble ####
-# Purpose: Replicated graphs from "Who Does Voter ID Keep from Voting?" by 
-# Bernard L. Fraga and Michael G. Miller (2022)
-# Author: Emily Su
-# Date: 13 February 2024
-# Contact: em.su@mail.utoronto.ca
-# License: MIT
-# Pre-requisites: tidyverse, ggplot2, and knitr has been installed by running 00-install_packages.R
-
+---
+title: "Reproduction of \"Who Does Voter ID Keep from Voting?\" by Bernard L. Fraga and Michael G. Miller (2022)"
+author: Emily Su
+thanks: "Code and some of the data are available at: https://github.com/moonsdust/voting. The files for the paper that could not be uploaded to GitHub can be found here: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/X5ALUA"
+date: today
+date-format: "D MMMM YYYY"
+format:
+  pdf:
+    toc: true
+number-sections: true
+bibliography: references.bib
+---
+```{r}
+#| include: false
+#| warning: false
+#| message: false
 
 #### Workspace setup ####
 library(tidyverse)
 library(ggplot2)
 library(knitr)
 
-
 #### Load data ####
-cleaned_reason_data <- read_csv("data/analysis_data/cleaned_reason_data.csv", show_col_types = FALSE)
+cleaned_reason_data <- read_csv("../../data/analysis_data/cleaned_reason_data.csv", show_col_types = FALSE)
+```
+# Introduction
+This report contains the figures replicated from Bernard L. Fraga and Michael G. Miller's paper, "Who Does Voter ID Keep from Voting?" [@citeVoterIDPaper]. In our replication, the statistical programming language, R [@citeR], `dataverse` [@citedataverse], `tidyverse` [@citetidyverse], `ggplot2` [@citeggplot2], `haven` [@citehaven], `readr` [@citereadr], and `knitr` [@citeknitr] were used to retrieve, clean, and analyze the datasets to create the figures and tables.
 
-#### Replication #### 
+# Figure A1 
+The following is the replicated graph ([@fig-a1]) and a corresponding table ([@tbl-a1]) from the paper that was put online in their reproduction package [@citeVoterIDPaper]. The original graph can be found here: https://dataverse.harvard.edu/file.xhtml?fileId=4328158&version=1.0.
+
+```{r}
+#| echo: false # Code will run and its output will show but the code itself will not be included in the doc
+#| warning: false # Warnings are not included 
+#| message: false # Messages are not included 
+
 ## Figure A1: 
 # https://dataverse.harvard.edu/file.xhtml?fileId=4328158&version=1.0
+
 figure_A1_rep_all_data <- cleaned_reason_data |>
   select(family, applied, transport, birthcert, disability, work, lost, other, black, latino, white)
 
@@ -154,6 +171,14 @@ figure_A1_rep_latinx_data <- figure_A1_rep_all_data |>
 # Referenced code from here: https://help.qresearchsoftware.com/hc/en-us/articles/4446615637775-How-to-Merge-Tables-Using-R
 combined_figure_A1_data <- rbind(figure_A1_rep_white_data, figure_A1_rep_black_data)
 combined_figure_A1_data <- rbind(combined_figure_A1_data, figure_A1_rep_latinx_data)
+```
+
+```{r}
+#| label: fig-a1
+#| fig-cap: Impediments of Texas voters who filed RIDs in 2016 by Race (Figure A1 from paper)
+#| echo: false # Code will run and its output will show but the code itself will not be included in the doc
+#| warning: false # Warnings are not included 
+#| message: false # Messages are not included 
 
 # Graph
 # Referenced code from https://r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
@@ -172,17 +197,30 @@ combined_figure_A1_data |>
   # to figure out how to put labels on the left and use facet_grid
   facet_grid(vars(race), switch = "y") +
   guides(x = guide_axis(angle = 0), ) +
-  theme(plot.title = element_text(size = 9, face = "bold"),
+  theme(plot.title = element_text(size = 8, face = "bold"),
         axis.title=element_text(size = 9, face = "bold"),
         axis.text.y = element_text(size = 8)) + 
   ggtitle("Impediments of Texas voters who filed RIDs in 2016 by Race")
-
+```
+\newpage
+```{r}
+#| label: tbl-a1
+#| tbl-cap: Impediments of Texas voters who filed RIDs in 2016 by Race (Corresponds to Figure A1 from paper)
+#| echo: false # Code will run and its output will show but the code itself will not be included in the doc
+#| warning: false # Warnings are not included 
+#| message: false # Messages are not included 
 # Table
 combined_figure_A1_data |>
   kable()
+```
 
+# Figure 2
+The following graph ([@fig-second]) corresponds to figure 2 in the paper's main body [@citeVoterIDPaper]. A table ([@tbl-second]) was also created to show the percentages from the replication. 
+```{r}
+#| echo: false # Code will run and its output will show but the code itself will not be included in the doc
+#| warning: false # Warnings are not included 
+#| message: false # Messages are not included 
 
-## Figure 2
 figure_2_rep_data <- cleaned_reason_data |>
   select(family, applied, transport, birthcert, disability, work, lost, other) |>
   # Get percentages 
@@ -219,6 +257,14 @@ figure_2_rep_data <- cleaned_reason_data |>
                 "Other Reason"
                 )
   ) 
+```
+
+```{r}
+#| label: fig-second
+#| fig-cap: Impediments of Texas voters who filed RIDs in 2016 (Figure 2 from paper)
+#| echo: false # Code will run and its output will show but the code itself will not be included in the doc
+#| warning: false # Warnings are not included 
+#| message: false # Messages are not included 
 
 # Referenced code from https://r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
 # To figure out how to sort 
@@ -227,20 +273,34 @@ figure_2_rep_data |>
   mutate(reasons = fct_reorder(reasons, desc(percent))) |>
   ggplot(mapping = aes(x = reasons, y = percent)) +
   geom_bar(stat="identity") +
-  ggtitle("Impediments of Texas voters who filed RIDs in 2016") +
+  ggtitle("Impediments of Texas voters who filed RIDS in 2016") +
   coord_flip() + 
   theme_minimal() +
   labs(x = "Reasons", y = "Percent") +
   theme(plot.title = element_text(size = 9, face = "bold"),
         axis.title = element_text(size = 9, face = "bold")) 
 
+
+```
+\newpage
+```{r}
+#| label: tbl-second
+#| tbl-cap: Impediments of Texas voters who filed RIDs in 2016 (Figure 2 from paper)
+#| echo: false # Code will run and its output will show but the code itself will not be included in the doc
+#| warning: false # Warnings are not included 
+#| message: false # Messages are not included 
 # Table
 figure_2_rep_data |> 
   kable()
-
+```
 
 # Figure A3
-# https://dataverse.harvard.edu/file.xhtml?fileId=4328141&version=1.0
+The following is the replicated graph ([@fig-a3]) and a corresponding table ([@tbl-a3]) from the paper that was put online in their reproduction package [@citeVoterIDPaper]. The original graph can be found here: https://dataverse.harvard.edu/file.xhtml?fileId=4328141&version=1.0.
+```{r}
+#| echo: false # Code will run and its output will show but the code itself will not be included in the doc
+#| warning: false # Warnings are not included 
+#| message: false # Messages are not included 
+
 figure_A3_rep_all_data <- cleaned_reason_data |>
   select(relocation, id_capable, hardship, black, latino, white)
 
@@ -345,8 +405,15 @@ figure_A3_rep_latinx_data <- figure_A3_rep_all_data |>
 # Referenced code from here: https://help.qresearchsoftware.com/hc/en-us/articles/4446615637775-How-to-Merge-Tables-Using-R
 combined_figure_A3_data <- rbind(figure_A3_rep_white_data, figure_A3_rep_black_data)
 combined_figure_A3_data <- rbind(combined_figure_A3_data, figure_A3_rep_latinx_data)
+```
+\newpage
 
-
+```{r}
+#| label: fig-a3
+#| fig-cap: General Impediments of Texas voters who filed RIDs in 2016 by Race (Figure A3 from paper)
+#| echo: false # Code will run and its output will show but the code itself will not be included in the doc
+#| warning: false # Warnings are not included 
+#| message: false # Messages are not included 
 # Graph
 # Referenced code from https://r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
 # To figure out how to sort 
@@ -367,7 +434,21 @@ combined_figure_A3_data |>
   theme(plot.title = element_text(size = 9, face = "bold"),
         axis.title=element_text(size = 9, face = "bold")) + 
   ggtitle("General Impediments of Texas voters who filed RIDs in 2016 by Race")
+```
+
+```{r}
+#| label: tbl-a3
+#| tbl-cap: General Impediments of Texas voters who filed RIDs in 2016 by Race (Figure A3 from paper)
+#| echo: false # Code will run and its output will show but the code itself will not be included in the doc
+#| warning: false # Warnings are not included 
+#| message: false # Messages are not included 
 
 # Table
 combined_figure_A3_data |>
   kable()
+```
+From our reproduction, we found that our results for figures A1, 2, and A3 were consistent with the figures from the the original paper [@citeVoterIDPaper].
+
+# References
+
+
