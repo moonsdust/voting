@@ -1,14 +1,13 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
-author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+title: "Voting"
+author: "Emily Su"
+thanks: "Data and code are available at: https://github.com/moonsdust/toronto-collisions. The replication on the Social Science Reproduction platform can be found here: https://www.socialsciencereproduction.org/reproductions/c0db16d9-e70e-4bbc-85d2-f7137a0e8c47/index"
 date: today
-date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
-format: pdf
+date-format: "YYYY MMMM D"
+abstract: "Abstract."
+format:
+  pdf:
+    toc: true
 number-sections: true
 bibliography: references.bib
 ---
@@ -17,140 +16,89 @@ bibliography: references.bib
 #| include: false
 #| warning: false
 #| message: false
+#### Preamble ####
+# Purpose: To create graphs and analyze data based on data from "Who Does Voter ID Keep from Voting?" (Fraga and Miller 2022)"
+# Author: Emily Su
+# Email: em.su@mail.utoronto.ca
+# Date: 13 February 2024
+# Prerequisites: All the scripts in the scripts folder have been ran starting from 00-install_packages.R.
 
-library(tidyverse)
-library(palmerpenguins)
+#### Workspace setup ####
+library(tidyverse) # Contains data-related packages
+library(knitr) # To make tables
+library(janitor) # To clean datasets
+library(dplyr)
+library(ggplot2) # To make graphs
+library(sf) # For making maps
+library(readr)
 ```
 
+```{r}
+#| include: false # Would run the code but it will have no output and code is not in the document 
+#| warning: false # Warnings are not included 
+#| message: false # Messages are not included 
+
+# Read in data
+cleaned_reason_data <- read_csv("../data/analysis_data/cleaned_reason_data.csv", show_col_types = FALSE)
+
+# Texas County data
+texas_county <- read_csv("../data/analysis_data/cleaned_map_data.csv", show_col_types = FALSE)
+cleaned_map_data <- st_as_sf(texas_county, wkt = "the_geom")
+```
 
 # Introduction
-
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
-
-The remainder of this paper is structured as follows. @sec-data....
 
 
 
 # Data {#sec-data}
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
+The datasets were retrieved, simulated, cleaned, analyzed, and tested using the `R` programming language [@citeR], `tidyverse` [@citetidyverse], `haven` [@citehaven], `knitr` [@citeknitr], `janitor` [@citejanitor], `dplyr` [@citedplyr], `ggplot2` [@citeggplot2], `sf` [@citesf], `readr` [@citereadr], and `dataverse` [@citedataverse]. 
 
+# Results {#sec-result}
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
-
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
+#| label: fig-votermap
+#| fig-cap: Number of voters across Texas counties during 2016 United States election without proper ID
 #| echo: false
 #| warning: false
 #| message: false
 
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
-
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+# Referenced to figure out how to create map: https://roelandtn.frama.io/cours_r_pdm/mapping-with-r-and-sf.html
+ggplot(cleaned_map_data) + 
+  geom_sf(aes(fill = count)) + 
+  theme_minimal() + 
+  labs(
+    x = "Longitude",
+    y = "Latitude",
+    title = "Number of 2016 US election voters across Texas counties without proper ID",
+    subtitle = "Counties with labels have more than or equal to 500 voters without IDs",
+    fill = "Number of voters"
+    ) +
+  # Changes the font of the title and removes the x and y axis 
+  # Reference to figured out how to add labels to maps https://tmieno2.github.io/R-as-GIS-for-Economists/create-maps.html
+  geom_sf_text(
+    # Referenced code to figure out how to only show labels with certain values     
+    # https://r-graph-gallery.com/275-add-text-labels-with-ggplot2.html 
+    data = cleaned_map_data |> filter(count>=500),
+    # Label is county name
+    aes(label = county),
+    check_overlap = TRUE,
+    size = 2, 
+    color = "pink"
+    ) +
+    theme(plot.title = element_text(size = 9, face = 'bold'), 
+          plot.subtitle = element_text(size = 9),
+          rect = element_blank(), 
+          axis.text.x = element_blank(), 
+          axis.text.y = element_blank(), 
+          axis.ticks = element_blank(), 
+          legend.title = element_text(size = 8),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()
+          ) 
 ```
-
-Talk way more about it. 
-
-
-
-# Model
-
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
-
-# Results
-
-Our results are summarized in @tbl-modelresults.
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
-```
-
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
-
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
-```
-
-
-
 
 # Discussion
 
-## First discussion point {#sec-first-point}
-
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
 
 \newpage
 
@@ -158,60 +106,29 @@ Weaknesses and next steps should also be included.
 
 # Appendix {-}
 
+## Acknowledgments 
+We would like to acknowledge @citetellingstorieswithdata for some of the R code used in this paper to produce the tables and graphs. 
 
-# Additional data details
+## Datasets Used {#sec-datasetused}
+Due to the length of the datasets horizontally, presenting glimpses of the datasets was not possible in the paper. However, the cleaned datasets that was used can be found here: https://github.com/moonsdust/voting/tree/main/data/analysis_data.
 
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
+## Tables from Results {#sec-tablesfromresults}
 ```{r}
-#| eval: true
+#| label: tbl-votermap
+#| tbl-cap: Number of United States election voters across Texas counties in 2016 without proper ID
 #| echo: false
-#| message: false
 #| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
-```
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
 #| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
 
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
+texas_county |>
+  select(county, count) |>
+  arrange(desc(count)) |>
+  rename(
+    "Number of Voters" = count,
+    "County" = county
+  ) |>
+  kable()
 ```
-
-
 
 \newpage
 
