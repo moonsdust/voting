@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains a replication of the paper, "Who Does Voter ID Keep from Voting?" (Fraga and Miller 2022): https://doi.org/10.1086/716282. The replication on the Social Science Reproduction Platform can be found through this [link here](https://www.socialsciencereproduction.org/reproductions/9299f3df-cdc2-45aa-82e4-c4d43efe8b4a/index). The corresponding script to run the replication can be found under `scripts/99-replications.R`. 
+This repository contains a replication of the paper, "Who Does Voter ID Keep from Voting?" (Fraga and Miller 2022): https://doi.org/10.1086/716282. The replication on the Social Science Reproduction Platform can be found through this [link here](https://www.socialsciencereproduction.org/reproductions/c0db16d9-e70e-4bbc-85d2-f7137a0e8c47/index). The corresponding script to run the replication can be found under `scripts/99-replications.R`. 
 
 ## Important Notes
 **Data from Paper**: Not all data was able to be retrieved using the `Dataverse` API in `scripts/01-download_data.R` (Please see comments 01-download_data.R for more information) and not all files can be uploaded due to their file size exceeding 100MB. All the files and data from the paper can be found here: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/X5ALUA
