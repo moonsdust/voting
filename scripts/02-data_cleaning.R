@@ -21,7 +21,7 @@ cleaned_reason_data <- reason_data |>
         )
   ) |>
   # Remove columns that we don't need for our analysis 
-  select(-c(age_sq, race, bc2, utility2, bank2, govcheck2, other_id, vote_cert))
+  select(-c(identifier, age_sq, race, bc2, utility2, bank2, govcheck2, other_id, vote_cert))
     
 #### Save data ####
 write_csv(cleaned_reason_data, "data/analysis_data/cleaned_reason_data.csv")
