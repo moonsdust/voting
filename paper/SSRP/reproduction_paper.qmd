@@ -410,7 +410,7 @@ combined_figure_A3_data <- rbind(combined_figure_A3_data, figure_A3_rep_latinx_d
 
 ```{r}
 #| label: fig-a3
-#| fig-cap: General Impediments of Texas voters who filed RIDs in 2016 by Race (Figure A3 from paper)
+#| fig-cap: General impediments of Texas voters who filed RIDs with "Other" option selected in 2016 by Race (Figure A3 from paper)
 #| echo: false # Code will run and its output will show but the code itself will not be included in the doc
 #| warning: false # Warnings are not included 
 #| message: false # Messages are not included 
@@ -438,7 +438,7 @@ combined_figure_A3_data |>
 
 ```{r}
 #| label: tbl-a3
-#| tbl-cap: General Impediments of Texas voters who filed RIDs in 2016 by Race (Figure A3 from paper)
+#| tbl-cap: General impediments of Texas voters who filed RIDs with "Other" option selected in 2016 by Race (Figure A3 from paper)
 #| echo: false # Code will run and its output will show but the code itself will not be included in the doc
 #| warning: false # Warnings are not included 
 #| message: false # Messages are not included 
