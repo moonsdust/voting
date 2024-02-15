@@ -24,7 +24,10 @@ cleaned_reason_data <- reason_data |>
         )
   ) |>
   # Remove columns that we don't need for our analysis 
-  select(-c(identifier, age_sq, race, bc2, utility2, bank2, govcheck2, other_id, vote_cert))
+  select(-c(age, identifier, age_sq, race, bc2, utility2, bank2, govcheck2, other_id, vote_cert))
+
+# Set count values that are NA to 0 
+cleaned_reason_data$female[is.na(cleaned_reason_data$female)] <- 0
 
 
 # Dataset 2
