@@ -33,10 +33,9 @@ simulated_data_one <- tibble(
 
 # Dataset 2 (reason dataset)
 # Columns: female | transport | birthcert | work | lost | disability | 
-# family | other | black | latino | asian | white | 
+# family | applied | other | black | latino | asian | white | 
 # relocation | id_capable | hardship 
 simulated_data_two <- tibble(
-  age = round(runif(n = num_of_voters_without_id, min = 18, max = 130)), 
   female = round(runif(n = num_of_voters_without_id, min = 0, max = 1)), 
   transport = round(runif(n = num_of_voters_without_id, min = 0, max = 1)),
   birthcert = round(runif(n = num_of_voters_without_id, min = 0, max = 1)),
@@ -44,6 +43,7 @@ simulated_data_two <- tibble(
   lost = round(runif(n = num_of_voters_without_id, min = 0, max = 1)),
   disability = round(runif(n = num_of_voters_without_id, min = 0, max = 1)),
   family = round(runif(n = num_of_voters_without_id, min = 0, max = 1)),
+  applied = round(runif(n = num_of_voters_without_id, min = 0, max = 1)),
   other = round(runif(n = num_of_voters_without_id, min = 0, max = 1)),
   black = round(runif(n = num_of_voters_without_id, min = 0, max = 1)),
   latino = round(runif(n = num_of_voters_without_id, min = 0, max = 1)),
@@ -87,8 +87,11 @@ class(simulated_data_two$black) == "numeric"
 class(simulated_data_two$latino) == "numeric"
 class(simulated_data_two$asian) == "numeric"
 class(simulated_data_two$white) == "numeric"
+class(simulated_data_two$relocation) == "numeric"
+class(simulated_data_two$id_capable) == "numeric"
+class(simulated_data_two$hardship) == "numeric"
 
-# 2. Numeric columns' minimum is greater than or equal to 0 (except for age)
+# 2. Numeric columns' minimum is greater than or equal to 0
 simulated_data_two$female |> min()  >= 0
 simulated_data_two$transport |> min()  >= 0
 simulated_data_two$birthcert |> min()  >= 0
@@ -96,6 +99,7 @@ simulated_data_two$work |> min()  >= 0
 simulated_data_two$lost |> min()  >= 0
 simulated_data_two$disability |> min()  >= 0
 simulated_data_two$family |> min()  >= 0
+simulated_data_two$applied |> min()  >= 0
 simulated_data_two$other |> min()  >= 0
 simulated_data_two$black |> min()  >= 0
 simulated_data_two$latino |> min()  >= 0
@@ -113,6 +117,7 @@ simulated_data_two$work |> unique() %in% c(0, 1)
 simulated_data_two$lost |> unique() %in% c(0, 1)
 simulated_data_two$disability |> unique() %in% c(0, 1)
 simulated_data_two$family |> unique() %in% c(0, 1)
+simulated_data_two$applied |> unique() %in% c(0, 1)
 simulated_data_two$other |> unique() %in% c(0, 1)
 simulated_data_two$black |> unique() %in% c(0, 1)
 simulated_data_two$latino |> unique() %in% c(0, 1)
