@@ -17,3 +17,4 @@ install.packages("ggplot2") # To make graphs
 install.packages("sf") # For making maps
 install.packages("readr")
 install.packages("dataverse") # Dataverse API to obtain datasets
+install.packages("ggpubr") # To put multiple graphs in one graphs 
