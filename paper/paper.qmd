@@ -1,7 +1,7 @@
 ---
-title: "Voting without ID"
+title: "Female Voters without ID in Texas During 2016 United States Election"
 author: "Emily Su"
-thanks: "Data and code are available at: https://github.com/moonsdust/toronto-collisions. The replication on Social Science Reproduction Platform can be found here: https://www.socialsciencereproduction.org/reproductions/c0db16d9-e70e-4bbc-85d2-f7137a0e8c47/index"
+thanks: "Data and code are available at: https://github.com/moonsdust/toronto-collisions. The replication on Social Science Reproduction Platform can be found here: https://doi.org/10.48152/ssrp-cbev-p353"
 date: today
 date-format: "YYYY MMMM D"
 abstract: "Abstract."
@@ -31,6 +31,7 @@ library(dplyr)
 library(ggplot2) # To make graphs
 library(sf) # For making maps
 library(readr)
+library(ggpubr)
 ```
 
 ```{r}
@@ -38,7 +39,8 @@ library(readr)
 #| warning: false # Warnings are not included 
 #| message: false # Messages are not included 
 
-# Read in data
+## Read in data ##
+# Reason Data 
 cleaned_reason_data <- read_csv("../data/analysis_data/cleaned_reason_data.csv", show_col_types = FALSE)
 
 # Texas County data
@@ -48,35 +50,76 @@ cleaned_map_data <- st_as_sf(texas_county, wkt = "the_geom")
 
 # Introduction
 
+The estimand is the effect of photo ID requirements on female voter turnouts in Texas.  
 
+Reasonable Impediment Declaration (RID)
 
 # Data {#sec-data}
-## Source 
+This paper seeks to further investigate @citeVoterIDPaper's paper claim that registrants voting without photo IDs were mostly Black and Latinx with a focus on female voters in Texas. Asians, who was excluded from a majority of the figures in the paper, were also included in this paper. In the analysis, the paper used two datasets, ```cleaned_reason_data.csv``` and ```cleaned_map_data.csv```. ```cleaned_reason_data.csv``` is from the paper we replicated [@citeVoterIDPaper] where its original dataset "fraga_miller_reasons_replication" is a Stata file [@citeStata]. The other dataset is a hybrid dataset where female voter counts comes from "fraga_miller_reasons_replication" [@citeVoterIDPaper] and geometry data on Texas comes from Texas Open Data Portal's "County Map - StratMap_County_poly" dataset, which is publicly available [@citeTexasMapData]. 
 
+## Data Source and Measurements
+
+### Reason Dataset
+```cleaned_reason_data.csv```
+
+In 2016, individuals in Texas without a valid photo IDs could vote in the 2016 United States election as long as they filled out an RID [@citeVoterIDPaper]. The RID form were available languages such as English, Spanish, Vietnamese, or Chinese. The form asked for the voter's name, signature, a form of non-photo id such as current utility bill and the reason they are not able to present a valid photo ID at the polling place. The form provided the following options for reasons: Family Obligations ("family" in the dataset); Photo ID applied for but not not received ("applied" in the dataset); Lack of Transportation ("transport" in the dataset); Lack of birth certificate or other documents needed to obtain acceptable photo ID ("birthcert" in the dataset); Disability or Illness ("disability" in the dataset); Work schedule ("work" in the dataset); Lost or stolen photo ID ("lost" in the dataset); Other reasonable impediment or difficulty ("other" in the dataset) [@citeVoterIDPaper]. Due to the Texas Public Information Act, @citeVoterIDPaper was able to request for 16,097 RID forms to use for their study. @citeVoterIDPaper also obtained a copy of the Texas voter registration file in 2017 from the Texas Secretary of State. These two sources were then merged to get further information on voters from the RIDs. Since the RIDs do not contain information about a voter's race and ethnicity, they used a R package, wru [@citeR] to get estimates of every voter’s race based on address, surname, sex, and birthday [@citeVoterIDPaper]. The three sources were then recorded into a spreadsheet where each row represents one form containing information about the voter’s county, gender, race, and reason they don’t have a valid ID. For the RIDs where the voter has indicated “Other” and wrote down a reason, @citeVoterIDPaper and their research assistants took note of the reason and categorized their reason into three categories based on their discretion: Relocation ("relocation" in dataset), Hardship ("hardship" in dataset), and ID-Capable ("id_capable" in dataset). Relocation are reasons that mention recently moving, being a student, or waiting for a new ID [@citeVoterIDPaper]. Hardship are reasons where hardships prevented the voter from getting a valid photo ID [@citeVoterIDPaper]. ID-Capable are given to voters who were able to get a photo ID in the past [@citeVoterIDPaper]. This spreadsheet was then turned into a dataset, which is available on Dataverse [@citedataverse].
+
+### Cleaned Map Dataset
+```cleaned_map_data.csv```
+
+One half of the dataset comes ```cleaned_reason_data.csv``` while the other half comes from the "County Map - StratMap_County_poly" datasets, which is available on Texas Open Data Portal [@citeTexasMapData]. The dataset contains geometry data (also known as "the_geom" in the dataset) that reconstructs a map of Texas and it also reconstructs the boundaries of Texas' counties (also called "county" in the dataset). These boundaries coordinates were obtained by the Texas Open Data Portal team [@citeTexasMapData] using the United States Geological Survey's digital 7.5 minute Topology Maps, who obtain their data from satellites every 3 years [@citeUSGS]. 
 
 ## Methodology
-The datasets were retrieved, simulated, cleaned, analyzed, and tested using the `R` programming language [@citeR], `tidyverse` [@citetidyverse], `haven` [@citehaven], `knitr` [@citeknitr], `janitor` [@citejanitor], `dplyr` [@citedplyr], `ggplot2` [@citeggplot2], `sf` [@citesf], `readr` [@citereadr], and `dataverse` [@citedataverse]. 
+The datasets used in this paper were retrieved, simulated, cleaned, analyzed, and tested using the R programming language [@citeR], tidyverse [@citetidyverse], haven [@citehaven], knitr [@citeknitr], janitor [@citejanitor], dplyr [@citedplyr], ggplot2 [@citeggplot2], sf [@citesf], readr [@citereadr], dataverse [@citedataverse], and ggpubr [@citeggpubr]. 
 
-## Measurements
-
+For the Reason dataset, a new column called "white" was constructed to indicate if the voter was white or not since it was not in the original dataset. For the cleaned map data, the columns, "female_count", "female_white", "female_black", "female_asian", and "female_latinx" were created from ```cleaned_reason_data.csv``` by filtering for female voters and summing the number of voters of each race. 
 
 # Results {#sec-result}
+
+## Texas females who voted without a photo ID during 2016 United States election
+```{R}
+#| label: tbl-femaleratio
+#| tbl-cap: Percentage of Texas Voters who are female versus not female who voted in 2016 United States election without a photo ID. 
+#| echo: false
+#| warning: false
+#| message: false
+
+femaleratiodata <- cleaned_reason_data |>
+  # Select female column
+  select(female) |>
+  # Create a not_female column
+  mutate(
+    not_female = if_else((female == 0), 1, 0)
+  ) |>
+  # Compute percent and make them new columns
+  mutate(
+    "Female" = round(sum(female) / n(), 2),
+    "Not Female" = round(sum(not_female) / n(), 2)
+  ) |>
+  # Only select percent columns
+  select("Female", "Not Female") |>
+  unique()
+
+femaleratiodata |>
+  kable()
+```
+
 ```{r}
-#| label: fig-votermap
-#| fig-cap: Number of voters across Texas counties during 2016 United States election without proper ID
+#| label: fig-femalevotermap
+#| fig-cap: Number of female voters across Texas counties during 2016 United States election without a photo ID
 #| echo: false
 #| warning: false
 #| message: false
 
 # Referenced to figure out how to create map: https://roelandtn.frama.io/cours_r_pdm/mapping-with-r-and-sf.html
 ggplot(cleaned_map_data) + 
-  geom_sf(aes(fill = count)) + 
+  geom_sf(aes(fill = female_count)) + 
   theme_minimal() + 
   labs(
     x = "Longitude",
     y = "Latitude",
-    title = "Number of 2016 US election voters across Texas counties without proper ID",
-    subtitle = "Counties with labels have more than or equal to 500 voters without IDs",
+    title = "Number of 2016 US election female voters across Texas counties without a photo ID",
+    subtitle = "Counties with labels are 1 of the 5 counties with the most female voters without photo IDs",
     fill = "Number of voters"
     ) +
   # Changes the font of the title and removes the x and y axis 
@@ -84,7 +127,7 @@ ggplot(cleaned_map_data) +
   geom_sf_text(
     # Referenced code to figure out how to only show labels with certain values     
     # https://r-graph-gallery.com/275-add-text-labels-with-ggplot2.html 
-    data = cleaned_map_data |> filter(count>=500),
+    data = cleaned_map_data |> filter(female_count>=355),
     # Label is county name
     aes(label = county),
     check_overlap = TRUE,
@@ -96,12 +139,681 @@ ggplot(cleaned_map_data) +
           rect = element_blank(), 
           axis.text.x = element_blank(), 
           axis.text.y = element_blank(), 
+          axis.title.x = element_blank(), 
+          axis.title.y = element_blank(), 
           axis.ticks = element_blank(), 
           legend.title = element_text(size = 8),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank()
           ) 
 ```
+```{r}
+#| label: tbl-femalevotermap
+#| tbl-cap: Number of female voters across Texas counties during 2016 United States election without a photo ID
+#| echo: false
+#| warning: false
+#| message: false
+
+texas_county |>
+  # Chooses county and female_count column
+  select(county, female_count) |>
+  # Rearrange based on decreasing order for female_count
+  arrange(desc(female_count)) |>
+  rename(
+    "Number of Female Voters" = female_count,
+    "County" = county
+  ) |>
+  head() |>
+  kable()
+```
+\newpage
+## Texas females who voted without a photo ID during 2016 United States election (Across Race)
+```{r}
+#| label: fig-femaleracevotermap
+#| fig-cap: Number of female voters of different race across Texas counties during 2016 United States election without a photo ID
+#| echo: false
+#| warning: false
+#| message: false
+
+# Referenced to figure out how to create map: https://roelandtn.frama.io/cours_r_pdm/mapping-with-r-and-sf.html
+female_asian_graph <- ggplot(cleaned_map_data) + 
+  geom_sf(aes(fill = female_asian)) + 
+  theme_minimal() + 
+  labs(
+    x = "Longitude",
+    y = "Latitude",
+    title = "Asian female voters",
+    fill = "Number of voters"
+    ) +
+  # Changes the font of the title and removes the x and y axis 
+  # Reference to figured out how to add labels to maps https://tmieno2.github.io/R-as-GIS-for-Economists/create-maps.html
+  geom_sf_text(
+    # Referenced code to figure out how to only show labels with certain values     
+    # https://r-graph-gallery.com/275-add-text-labels-with-ggplot2.html 
+    data = cleaned_map_data |> filter(female_asian>=10),
+    # Label is county name
+    aes(label = county),
+    check_overlap = TRUE,
+    size = 2, 
+    color = "pink"
+    ) +
+    theme(plot.title = element_text(size = 9, face = 'bold'), 
+          plot.subtitle = element_text(size = 9),
+          rect = element_blank(), 
+          axis.text.x = element_blank(), 
+          axis.text.y = element_blank(), 
+          axis.title.x = element_blank(), 
+          axis.title.y = element_blank(), 
+          axis.ticks = element_blank(), 
+          legend.title = element_text(size = 8),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()
+          ) 
+
+female_white_graph <- ggplot(cleaned_map_data) + 
+  geom_sf(aes(fill = female_white)) + 
+  theme_minimal() + 
+  labs(
+    x = "Longitude",
+    y = "Latitude",
+    title = "White female voters",
+    fill = "Number of voters"
+    ) +
+  # Changes the font of the title and removes the x and y axis 
+  # Reference to figured out how to add labels to maps https://tmieno2.github.io/R-as-GIS-for-Economists/create-maps.html
+  geom_sf_text(
+    # Referenced code to figure out how to only show labels with certain values     
+    # https://r-graph-gallery.com/275-add-text-labels-with-ggplot2.html 
+    data = cleaned_map_data |> filter(female_white>=160),
+    # Label is county name
+    aes(label = county),
+    check_overlap = TRUE,
+    size = 2, 
+    color = "pink"
+    ) +
+    theme(plot.title = element_text(size = 9, face = 'bold'), 
+          plot.subtitle = element_text(size = 9),
+          rect = element_blank(), 
+          axis.text.x = element_blank(), 
+          axis.text.y = element_blank(), 
+          axis.title.x = element_blank(), 
+          axis.title.y = element_blank(), 
+          axis.ticks = element_blank(), 
+          legend.title = element_text(size = 8),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()
+          ) 
+
+female_black_graph <- ggplot(cleaned_map_data) + 
+  geom_sf(aes(fill = female_black)) + 
+  theme_minimal() + 
+  labs(
+    x = "Longitude",
+    y = "Latitude",
+    title = "Black female voters",
+    fill = "Number of voters"
+    ) +
+  # Changes the font of the title and removes the x and y axis 
+  # Reference to figured out how to add labels to maps https://tmieno2.github.io/R-as-GIS-for-Economists/create-maps.html
+  geom_sf_text(
+    # Referenced code to figure out how to only show labels with certain values     
+    # https://r-graph-gallery.com/275-add-text-labels-with-ggplot2.html 
+    data = cleaned_map_data |> filter(female_black>=30),
+    # Label is county name
+    aes(label = county),
+    check_overlap = TRUE,
+    size = 2, 
+    color = "pink"
+    ) +
+    theme(plot.title = element_text(size = 9, face = 'bold'), 
+          plot.subtitle = element_text(size = 9),
+          rect = element_blank(), 
+          axis.text.x = element_blank(), 
+          axis.text.y = element_blank(), 
+          axis.title.x = element_blank(), 
+          axis.title.y = element_blank(), 
+          axis.ticks = element_blank(), 
+          legend.title = element_text(size = 8),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()
+          ) 
+
+
+female_latinx_graph <- ggplot(cleaned_map_data) + 
+  geom_sf(aes(fill = female_latinx)) + 
+  theme_minimal() + 
+  labs(
+    x = "Longitude",
+    y = "Latitude",
+    title = "Latina female voters",
+    fill = "Number of voters"
+    ) +
+  # Changes the font of the title and removes the x and y axis 
+  # Reference to figured out how to add labels to maps https://tmieno2.github.io/R-as-GIS-for-Economists/create-maps.html
+  geom_sf_text(
+    # Referenced code to figure out how to only show labels with certain values     
+    # https://r-graph-gallery.com/275-add-text-labels-with-ggplot2.html 
+    data = cleaned_map_data |> filter(female_latinx>=137),
+    # Label is county name
+    aes(label = county),
+    check_overlap = TRUE,
+    size = 2, 
+    color = "pink"
+    ) +
+    theme(plot.title = element_text(size = 9, face = 'bold'), 
+          plot.subtitle = element_text(size = 9),
+          rect = element_blank(), 
+          axis.text.x = element_blank(), 
+          axis.text.y = element_blank(), 
+          axis.title.x = element_blank(), 
+          axis.title.y = element_blank(), 
+          axis.ticks = element_blank(), 
+          legend.title = element_text(size = 8),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank()
+          )
+
+# Referenced http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/81-ggplot2-easy-way-to-mix-multiple-graphs-on-the-same-page/ to figure out how to have multiple graphs
+ggarrange(female_white_graph, female_black_graph, female_asian_graph, 
+          female_latinx_graph,
+          ncol = 2, nrow = 2)
+```
+
+```{r}
+#| label: tbl-whitefemalecounty
+#| tbl-cap: Number of White female voters of different race across Texas counties during 2016 United States election without a photo ID
+#| echo: false
+#| warning: false
+#| message: false
+
+texas_county |>
+  # Chooses county and female_white column
+  select(county, female_white) |>
+  # Rearrange based on decreasing order for female_white
+  arrange(desc(female_white)) |>
+  rename(
+    "Number of Female Voters" = female_white,
+    "County" = county
+  ) |>
+  head() |>
+  kable()
+```
+
+```{r}
+#| label: tbl-asianfemalecounty
+#| tbl-cap: Number of Asian female voters of different race across Texas counties during 2016 United States election without a photo ID
+#| echo: false
+#| warning: false
+#| message: false
+
+texas_county |>
+  # Chooses county and female_asian column
+  select(county, female_asian) |>
+  # Rearrange based on decreasing order for female_asian
+  arrange(desc(female_asian)) |>
+  rename(
+    "Number of Female Voters" = female_asian,
+    "County" = county
+  ) |>
+  head() |>
+  kable()
+```
+
+```{r}
+#| label: tbl-blackfemalecounty
+#| tbl-cap: Number of Black female voters of different race across Texas counties during 2016 United States election without a photo ID
+#| echo: false
+#| warning: false
+#| message: false
+
+texas_county |>
+  # Chooses county and female_black column
+  select(county, female_black) |>
+  # Rearrange based on decreasing order for female_black
+  arrange(desc(female_black)) |>
+  rename(
+    "Number of Female Voters" = female_black,
+    "County" = county
+  ) |>
+  head() |>
+  kable()
+```
+
+```{r}
+#| label: tbl-latinafemalecounty
+#| tbl-cap: Number of Latina female voters of different race across Texas counties during 2016 United States election without a photo ID
+#| echo: false
+#| warning: false
+#| message: false
+texas_county |>
+  # Chooses county and female_latinx column
+  select(county, female_latinx) |>
+  # Rearrange based on decreasing order for female_latinx
+  arrange(desc(female_latinx)) |>
+  rename(
+    "Number of Female Voters" = female_latinx,
+    "County" = county
+  ) |>
+  head() |>
+  kable()
+```
+\newpage
+## Reasons of Texas females across different race without a photo ID during 2016 United States election
+```{R}
+#| echo: false
+#| warning: false
+#| message: false
+
+# Reason datasets
+# Graph inspired by Figure A1: 
+# https://dataverse.harvard.edu/file.xhtml?fileId=4328158&version=1.0
+
+figure_A1_rep_all_data <- cleaned_reason_data |>
+  select(family, applied, transport, birthcert, disability, work, lost, other, black, latino, white, asian, female)
+
+# White 
+figure_A1_rep_white_data <- figure_A1_rep_all_data |>
+  # Filter for female 
+  filter(female == 1) |>
+  # Filter for white
+  filter(white == 1) |>
+  # Remove other races
+  select(-c(black, latino, asian)) |>
+  # Get percentages 
+  mutate( 
+    "Family Obligations" = round(sum(family) / n(), 2),
+    "Applied, Has Not Recieved" = round(sum(applied) / n(), 2),
+    "Lack of Transportation" = round(sum(transport) / n(), 2),
+    "Lacks Necessary Documents" = round(sum(birthcert) / n(), 2), 
+    "Disability/Illness" = round(sum(disability) / n(), 2),
+    "Work Obligations" = round(sum(work) / n(), 2), 
+    "ID was Lost or Stolen" = round(sum(lost) / n(), 2), 
+    "Other Reason" = round(sum(other) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(family, applied, transport, birthcert, disability, work, lost, other, white, female)) |>
+  # Have the percentages only show up in 1 row
+  unique() |>
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Family Obligations", 
+                "Applied, Has Not Recieved", 
+                "Lack of Transportation", 
+                "Lacks Necessary Documents",
+                "Disability/Illness", 
+                "Work Obligations", 
+                "ID was Lost or Stolen",
+                "Other Reason"),
+     # Add column for race
+    race = "white"
+  ) 
+
+
+# Black
+figure_A1_rep_black_data <- figure_A1_rep_all_data |>
+  # Filter for female 
+  filter(female == 1) |>
+  # Filter for black
+  filter(black == 1) |>
+  # Remove other races
+  select(-c(white, latino, asian)) |>
+  # Get percentages 
+  mutate( 
+    "Family Obligations" = round(sum(family) / n(), 2),
+    "Applied, Has Not Recieved" = round(sum(applied) / n(), 2),
+    "Lack of Transportation" = round(sum(transport) / n(), 2),
+    "Lacks Necessary Documents" = round(sum(birthcert) / n(), 2), 
+    "Disability/Illness" = round(sum(disability) / n(), 2),
+    "Work Obligations" = round(sum(work) / n(), 2), 
+    "ID was Lost or Stolen" = round(sum(lost) / n(), 2), 
+    "Other Reason" = round(sum(other) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(family, applied, transport, birthcert, disability, work, lost, other, black, female)) |>
+  # Have the percentages only show up in 1 row
+  unique() |>
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Family Obligations", 
+                "Applied, Has Not Recieved", 
+                "Lack of Transportation", 
+                "Lacks Necessary Documents",
+                "Disability/Illness", 
+                "Work Obligations", 
+                "ID was Lost or Stolen",
+                "Other Reason"),
+    # Add column for race
+    race = "black"
+  ) 
+
+# Latinx
+figure_A1_rep_latinx_data <- figure_A1_rep_all_data |>
+  # Filter for female 
+  filter(female == 1) |>
+  # Filter for Latino
+  filter(latino == 1) |>
+  # Remove other races
+  select(-c(white, black, asian)) |>
+  # Get percentages 
+  mutate( 
+    "Family Obligations" = round(sum(family) / n(), 2),
+    "Applied, Has Not Recieved" = round(sum(applied) / n(), 2),
+    "Lack of Transportation" = round(sum(transport) / n(), 2),
+    "Lacks Necessary Documents" = round(sum(birthcert) / n(), 2), 
+    "Disability/Illness" = round(sum(disability) / n(), 2),
+    "Work Obligations" = round(sum(work) / n(), 2), 
+    "ID was Lost or Stolen" = round(sum(lost) / n(), 2), 
+    "Other Reason" = round(sum(other) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(family, applied, transport, birthcert, disability, work, lost, other, latino, female)) |>
+  # Have the percentages only show up in 1 row
+  unique() |> # Code snippet to convert to a 1-column matrix and then to a vector
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Family Obligations", 
+                "Applied, Has Not Recieved", 
+                "Lack of Transportation", 
+                "Lacks Necessary Documents",
+                "Disability/Illness", 
+                "Work Obligations", 
+                "ID was Lost or Stolen",
+                "Other Reason"),
+    # Add column for race
+    race = "latinx"
+  ) 
+
+# Asian
+figure_A1_rep_asian_data <- figure_A1_rep_all_data |>
+  # Filter for female 
+  filter(female == 1) |>
+  # Filter for asian
+  filter(asian == 1) |>
+  # Remove other races
+  select(-c(white, black, latino)) |>
+  # Get percentages 
+  mutate( 
+    "Family Obligations" = round(sum(family) / n(), 2),
+    "Applied, Has Not Recieved" = round(sum(applied) / n(), 2),
+    "Lack of Transportation" = round(sum(transport) / n(), 2),
+    "Lacks Necessary Documents" = round(sum(birthcert) / n(), 2), 
+    "Disability/Illness" = round(sum(disability) / n(), 2),
+    "Work Obligations" = round(sum(work) / n(), 2), 
+    "ID was Lost or Stolen" = round(sum(lost) / n(), 2), 
+    "Other Reason" = round(sum(other) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(family, applied, transport, birthcert, disability, work, lost, other, asian, female)) |>
+  # Have the percentages only show up in 1 row
+  unique() |> # Code snippet to convert to a 1-column matrix and then to a vector
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Family Obligations", 
+                "Applied, Has Not Recieved", 
+                "Lack of Transportation", 
+                "Lacks Necessary Documents",
+                "Disability/Illness", 
+                "Work Obligations", 
+                "ID was Lost or Stolen",
+                "Other Reason"),
+    # Add column for race
+    race = "asian"
+  ) 
+
+# Combine all
+# Referenced code from here: https://help.qresearchsoftware.com/hc/en-us/articles/4446615637775-How-to-Merge-Tables-Using-R
+combined_figure_A1_data <- rbind(figure_A1_rep_white_data, figure_A1_rep_black_data)
+combined_figure_A1_data <- rbind(combined_figure_A1_data, figure_A1_rep_latinx_data)
+combined_figure_A1_data <- rbind(combined_figure_A1_data, figure_A1_rep_asian_data)
+```
+
+```{r}
+#| label: fig-femaleracebarriers
+#| fig-cap: Impediments of female voters of different race across Texas counties during 2016 United States election without a photo ID
+#| echo: false
+#| warning: false
+#| message: false
+
+# Graph
+# Referenced code from https://r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
+# To figure out how to sort 
+combined_figure_A1_data |>
+  mutate(reasons = fct_reorder(reasons, desc(percent))) |>
+  ggplot(mapping = aes(x = reasons, y = percent)) +
+  geom_bar(stat="identity") +
+  theme_minimal() +
+  labs(
+    x = "Reasons",
+    y = "Percent"
+  ) +
+  coord_flip() + 
+  # Referenced code from https://github.com/tidyverse/ggplot2/issues/2762
+  # to figure out how to put labels on the left and use facet_grid
+  facet_grid(vars(race), switch = "y") +
+  guides(x = guide_axis(angle = 0), ) +
+  theme(plot.title = element_text(size = 9, face = "bold"),
+        axis.title=element_text(size = 9, face = "bold"),
+        axis.text.y = element_text(size = 7)) + 
+  ggtitle("Reasons female voters in Texas had no photo ID in 2016 by race")
+```
+
+```{r}
+#| label: fig-femaleraceotherbarriers
+#| fig-cap: Other impediments of female voters of different race across Texas counties during 2016 United States election without an ID
+#| echo: false
+#| warning: false
+#| message: false
+
+# Inspired by Figure A3 from
+# https://dataverse.harvard.edu/file.xhtml?fileId=4328141&version=1.0
+figure_A3_rep_all_data <- cleaned_reason_data |>
+  select(relocation, id_capable, hardship, black, latino, white, asian, female)
+
+# White 
+figure_A3_rep_white_data <- figure_A3_rep_all_data |>
+  # Filter for female 
+  filter(female == 1) |>
+  # Filter for white
+  filter(white == 1) |>
+  # Remove other races
+  select(-c(black, latino, asian, female)) |>
+  # Get percentages 
+  mutate( 
+    "Relocation" = round(sum(relocation) / n(), 2),
+    "Hardship" = round(sum(hardship) / n(), 2),
+    "ID-Capable" = round(sum(id_capable) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(relocation, id_capable, hardship, white)) |>
+  # Have the percentages only show up in 1 row
+  unique() |>
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Relocation", 
+                "Hardship", 
+                "ID-Capable"),
+    # Add column for race
+    race = "white"
+  ) 
+
+
+# Black 
+figure_A3_rep_black_data <- figure_A3_rep_all_data |>
+  # Filter for female 
+  filter(female == 1) |>
+  # Filter for black
+  filter(black == 1) |>
+  # Remove other races
+  select(-c(white, latino, asian, female)) |>
+  # Get percentages 
+  mutate( 
+    "Relocation" = round(sum(relocation) / n(), 2),
+    "Hardship" = round(sum(hardship) / n(), 2),
+    "ID-Capable" = round(sum(id_capable) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(relocation, id_capable, hardship, black)) |>
+  # Have the percentages only show up in 1 row
+  unique() |>
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Relocation", 
+                "Hardship", 
+                "ID-Capable"),
+    # Add column for race
+    race = "black"
+  ) 
+
+# Black 
+figure_A3_rep_latinx_data <- figure_A3_rep_all_data |>
+  # Filter for female
+  filter(female == 1) |>
+  # Filter for latino
+  filter(latino == 1) |>
+  # Remove other races
+  select(-c(white, black, asian, female)) |>
+  # Get percentages 
+  mutate( 
+    "Relocation" = round(sum(relocation) / n(), 2),
+    "Hardship" = round(sum(hardship) / n(), 2),
+    "ID-Capable" = round(sum(id_capable) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(relocation, id_capable, hardship, latino)) |>
+  # Have the percentages only show up in 1 row
+  unique() |>
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Relocation", 
+                "Hardship", 
+                "ID-Capable"),
+    # Add column for race
+    race = "latinx"
+  ) 
+
+# Asian 
+figure_A3_rep_asian_data <- figure_A3_rep_all_data |>
+  # Filter for female
+  filter(female == 1) |>
+  # Filter for asian
+  filter(asian == 1) |>
+  # Remove other races
+  select(-c(white, black, latino, female)) |>
+  # Get percentages 
+  mutate( 
+    "Relocation" = round(sum(relocation) / n(), 2),
+    "Hardship" = round(sum(hardship) / n(), 2),
+    "ID-Capable" = round(sum(id_capable) / n(), 2)
+  ) |>
+  # Remove the original columns
+  select(-c(relocation, id_capable, hardship, asian)) |>
+  # Have the percentages only show up in 1 row
+  unique() |>
+  # Code snippet to convert to a 1-column matrix and then to a vector 
+  # was adapted from the following: https://www.geeksforgeeks.org/convert-matrix-to-vector-in-r/
+  t() |> # Convert 1-row matrix into a 1-column matrix
+  c() |> # Convert to a vector
+  tibble() |> # Change into a tibble
+  rename( # Left side is the new name and the right side is the old name
+    percent = "c(...)"
+  ) |>
+  mutate(
+    reasons = c("Relocation", 
+                "Hardship", 
+                "ID-Capable"),
+    # Add column for race
+    race = "asian"
+  ) 
+
+# Combine all
+# Referenced code from here: https://help.qresearchsoftware.com/hc/en-us/articles/4446615637775-How-to-Merge-Tables-Using-R
+combined_figure_A3_data <- rbind(figure_A3_rep_white_data, figure_A3_rep_black_data)
+combined_figure_A3_data <- rbind(combined_figure_A3_data, figure_A3_rep_latinx_data)
+combined_figure_A3_data <- rbind(combined_figure_A3_data, figure_A3_rep_asian_data)
+
+
+# Graph
+# Referenced code from https://r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
+# To figure out how to sort 
+combined_figure_A3_data |>
+  mutate(reasons = fct_reorder(reasons, desc(percent))) |>
+  ggplot(mapping = aes(x = reasons, y = percent)) +
+  geom_bar(stat="identity") +
+  theme_minimal() +
+  labs(
+    x = "Reasons",
+    y = "Percent"
+  ) +
+  coord_flip() + 
+  # Referenced code from https://github.com/tidyverse/ggplot2/issues/2762
+  # to figure out how to put labels on the left and use facet_grid
+  facet_grid(vars(race), switch = "y") +
+  guides(x = guide_axis(angle = 0), ) +
+  theme(plot.title = element_text(size = 9, face = "bold"),
+        axis.title=element_text(size = 9, face = "bold")) + 
+  ggtitle("Other reasons female voters in Texas had no ID in 2016 by race")
+```
+```{r}
+#| label: tbl-femaleraceotherbarriers
+#| tbl-cap: Other impediments of female voters of different race across Texas counties during 2016 United States election without a photo ID
+#| echo: false
+#| warning: false
+#| message: false
+
+# Table
+combined_figure_A3_data |>
+  kable()
+```
+
 
 # Discussion
 
@@ -113,26 +825,21 @@ ggplot(cleaned_map_data) +
 # Appendix {-}
 
 ## Acknowledgments 
-We would like to acknowledge @citetellingstorieswithdata for some of the R code used in this paper to produce the tables and graphs. 
+I would like to acknowledge @citetellingstorieswithdata for some of the R code used in this paper to produce the tables and graphs. 
 
 ## Datasets Used {#sec-datasetused}
 Due to the length of the datasets horizontally, presenting glimpses of the datasets was not possible in the paper. However, the cleaned datasets that was used can be found here: https://github.com/moonsdust/voting/tree/main/data/analysis_data.
 
 ## Tables from Results {#sec-tablesfromresults}
 ```{r}
-#| label: tbl-votermap
-#| tbl-cap: Number of voters across Texas counties during 2016 United States election without proper ID
+#| label: tbl-femaleracebarriers
+#| tbl-cap: Impediments of female voters of different race across Texas counties during 2016 United States election without a photo ID
 #| echo: false
 #| warning: false
 #| message: false
 
-texas_county |>
-  select(county, count) |>
-  arrange(desc(count)) |>
-  rename(
-    "Number of Voters" = count,
-    "County" = county
-  ) |>
+# Table
+combined_figure_A1_data |>
   kable()
 ```
 
