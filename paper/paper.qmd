@@ -1,10 +1,10 @@
 ---
-title: "Female Voters without ID in Texas During 2016 United States Election"
+title: "During the 2016 United States Election, Minority Women are Negatively Impacted by Texas' Voter ID Law and It Needs to Be Fixed"
 author: "Emily Su"
-thanks: "Data and code are available at: https://github.com/moonsdust/toronto-collisions. The replication on Social Science Reproduction Platform can be found here: https://doi.org/10.48152/ssrp-cbev-p353"
+thanks: "Data and code are available at: https://github.com/moonsdust/voting. The replication on Social Science Reproduction Platform can be found here: https://doi.org/10.48152/ssrp-cbev-p353"
 date: today
 date-format: "YYYY MMMM D"
-abstract: "Abstract."
+abstract: "In 2016, Texas allowed voters without valid photo ID to vote in the 2016 United States election after the 2011 voter ID law was deemed to be discriminatory against minorities. This paper extends research done on Texas voters without valid photo IDs by focusing on female voters of different races without valid photo IDs across different counties. Our results showed that despite the relaxation of the voting law, the voter turnout rates of minority women without photo IDs were lower than White women without photo IDs and highly populated counties had the highest percentage of female voters without valid photo IDs. These results suggests that the 2011 voter ID law still had an effect on female voters, especially minority women and further investigation needs to be done on the reasons some women in Texas did not vote in 2016."
 format:
   pdf:
     toc: true
@@ -49,25 +49,28 @@ cleaned_map_data <- st_as_sf(texas_county, wkt = "the_geom")
 ```
 
 # Introduction
+In 2011, Texas became the largest state that implemented a strict photo ID law for voting [@citeVoterIDPaper]. Later on in 2016, the voter ID law was ruled to be purposely discriminatory against minorities [@citesoftenlaw]. In the same year, the United States (US) election was held and Texas allowed individuals without a valid photo ID to vote as long as they filled out a Reasonable Impediment Declaration (RID) to explain why they don't have a valid photo ID. But this raises the following questions: What barriers did people without a valid photo ID face during the 2016 US election? What was the demographic like for voters without valid photo IDs? What counties had the most individuals who were unable to present a valid photo ID on election day? 
 
-The estimand is the effect of photo ID requirements on female voter turnouts in Texas.  
+In Bernard L. Fraga and Michael G. Miller's paper "Who Do Voter ID Laws Keep from Voting?", they conducted research into the barriers of voters who filled out an RID and who voter ID laws prevented from voting. Fraga and Miller found that Black and Latinx voters in 2016 without a valid photo ID were less likely to vote when the photo ID law was in place [@citeVoterIDPaper]. They also found that the majority of voters who filled out a RID had a photo ID but were unable to present it at the polling places [@citeVoterIDPaper]. However, @citeVoterIDPaper did not delve into the specifics of the different counties with the most number of voters who filled out the RID and did not look into specific genders. Asian voters who filled out a RID were also excluded from a majority of the figures in the paper [@citeVoterIDPaper]. 
 
-Reasonable Impediment Declaration (RID)
+In this paper, the reason dataset from @citeVoterIDPaper's paper was used to investigate the demographic and barriers faced by female voters in Texas from four groups (White, Black, Asian, and Latinx) who filled out a RID during the 2016 United States election. The estimand we studied was the effect of Texas reducing strict photo ID requirements in 2016 on female voter turnouts across different counties and races. In our findings, the number of minority women who filled out a RID in 2016 was lower than White women. We also found that the most common barrier for Latinas and Black women was "ID was lost or stolen" and for Asian women it was because of "Other reasons" and specifically for "Relocation" reasons. For White women, they also specified "Other reasons" but their reasons were commonly related to "Hardship". We also discovered that highly populated counties like Harris, Travis, and Dallas had the largest percentage of female voters without a photo ID overall in 2016. Understanding the intersection of race and gender and how specific groups are impacted by laws like Texas' voter ID law can aid in addressing potential inequalities in future laws in the United States and beyond. 
+
+For the rest of the paper, the data section will cover the datasets used and how they were created, define variables used by our tables and graphs, and briefly explain our methodology (related to data cleaning, packages used, etc.). In the results section, we will reveal tables and graphs made on our datasets and explain what they show. In the discussion section, we will connect back to the real world and explain what the results could mean, the implications of our results, potential areas of improvement for the paper, and suggestions for future works. Finally, the appendix section will include a table that corresponds to a figure from our results and other information.
 
 # Data {#sec-data}
-This paper seeks to further investigate @citeVoterIDPaper's paper claim that the common reason registrants do not have photo IDs is not due to socioeconomic hardships. We will also extend their research into the demographics of who filled out a RID with a focus on female voters in Texas. Asians, who was excluded from a majority of the figures in the paper, were also included in this paper. In the analysis, the paper used two datasets, ```cleaned_reason_data.csv``` and ```cleaned_map_data.csv```. ```cleaned_reason_data.csv``` is from the paper we replicated [@citeVoterIDPaper] where its original dataset "fraga_miller_reasons_replication" is a Stata file [@citeStata]. The other dataset is a hybrid dataset where female voter counts comes from "fraga_miller_reasons_replication" [@citeVoterIDPaper] and geometry data on Texas comes from Texas Open Data Portal's "County Map - StratMap_County_poly" dataset, which is publicly available [@citeTexasMapData]. 
+This paper investigated @citeVoterIDPaper's paper claim that the common reason registrants do not have photo IDs is not due to socioeconomic hardships with a focus on female voters in Texas from four groups: White, Black, Asian, and Latinx. We also extended their research to the county level looking at which counties the female voters are from. In the analysis, the paper used two datasets, ```cleaned_reason_data.csv``` and ```cleaned_map_data.csv```. ```cleaned_reason_data.csv``` is from the paper we replicated [@citeVoterIDPaper] where its original dataset "fraga_miller_reasons_replication" is a Stata file [@citeStata]. The other dataset is a hybrid dataset where female voter counts come from "fraga_miller_reasons_replication" [@citeVoterIDPaper] and geometry data on Texas comes from Texas Open Data Portal's "County Map - StratMap_County_poly" dataset, which is publicly available [@citeTexasMapData]. We have also looked into other datasets to reconstruct the map of Texas but they were not selected since they did not mention the counties' names.
 
 ## Data Source and Measurements
 
 ### Reason Dataset
 ```cleaned_reason_data.csv```
 
-In 2016, individuals in Texas without a valid photo IDs could vote in the 2016 United States election as long as they filled out a RID [@citeVoterIDPaper]. The RID form were available languages such as English, Vietnamese, Spanish, or Chinese. The form asked for the voter's name, signature, a form of non-photo id such as current utility bill and the reason they are not able to present a valid photo ID at the polling place. The form provided the following options for reasons: Family Obligations ("family" in the dataset); Photo ID applied for but not not received ("applied" in the dataset); Lack of Transportation ("transport" in the dataset); Lack of birth certificate or other documents needed to obtain acceptable photo ID ("birthcert" in the dataset); Disability or Illness ("disability" in the dataset); Work schedule ("work" in the dataset); Lost or stolen photo ID ("lost" in the dataset); Other reasonable impediment or difficulty ("other" in the dataset) [@citeVoterIDPaper]. Due to the Texas Public Information Act, @citeVoterIDPaper was able to request for 16,097 RID forms from the 2016 US election. @citeVoterIDPaper also obtained a copy of the Texas voter registration file in 2017 from the Texas Secretary of State. These two sources were then merged to get further information on voters from the RIDs. Since the RIDs do not contain information about a voter's race and ethnicity, they used a R package, wru [@citeR] to get estimates of every voter’s race based on address, surname, sex, and birthday [@citeVoterIDPaper]. The three sources were then recorded into a spreadsheet where each row represents one form containing information about the voter’s county, gender, race, and reason they don’t have a valid ID. For the RIDs where the voter has indicated “Other” and wrote down a reason, @citeVoterIDPaper and their research assistants took note of the reason and categorized their reason into three categories based on their discretion: Relocation ("relocation" in dataset), Hardship ("hardship" in dataset), and ID-Capable ("id_capable" in dataset). Relocation are reasons that mention recently moving, being a student, or waiting for a new ID [@citeVoterIDPaper]. Hardship are reasons where hardships prevented the voter from getting a valid photo ID [@citeVoterIDPaper]. ID-Capable are given to voters who were able to get a photo ID in the past [@citeVoterIDPaper]. This spreadsheet was then turned into a dataset, which is available on Dataverse [@citedataverse].
+In 2016, individuals in Texas without a valid photo ID could vote in the 2016 United States election as long as they filled out a RID [@citeVoterIDPaper]. The RID forms were available in languages such as English, Vietnamese, Spanish, or Chinese. The form asked for the voter's name, signature, a form of non-photo ID such as a current utility bill and the reason they are not able to present a valid photo ID at the polling place. The form provided the following options for reasons: Family Obligations ("family" in the dataset); Photo ID applied for but not received ("applied" in the dataset); Lack of Transportation ("transport" in the dataset); Lack of birth certificate or other documents needed to obtain acceptable photo ID ("birthcert" in the dataset); Disability or Illness ("disability" in the dataset); Work schedule ("work" in the dataset); Lost or stolen photo ID ("lost" in the dataset); Other reasonable impediment or difficulty ("other" in the dataset) [@citeVoterIDPaper]. Due to the Texas Public Information Act, @citeVoterIDPaper was able to request 16,097 RID forms from the 2016 US election. @citeVoterIDPaper also obtained a copy of the Texas voter registration file in 2017 from the Texas Secretary of State. These two sources were then merged to get further information on voters from the RIDs. Since the RIDs do not contain information about a voter's race and ethnicity, they used an R package, wru [@citeR] to get estimates of every voter’s race based on address, surname, sex, and birthday [@citeVoterIDPaper]. The three sources were then recorded into a spreadsheet where each row represents one form containing information about the voter’s county, gender, race, and reason they don’t have a valid ID. For the RIDs where the voter has indicated “Other” and wrote down a reason, @citeVoterIDPaper and their research assistants took note of the reason and categorized their reason into three categories based on their discretion: Relocation ("relocation" in the dataset), Hardship ("hardship" in the dataset), and ID-Capable ("id_capable" in the dataset). "Relocation" are reasons that mentions recently moving, being a student, or waiting for a new ID [@citeVoterIDPaper]. "Hardship" are reasons where hardships prevented the voter from getting a valid photo ID [@citeVoterIDPaper]. ID-Capable are given to voters who were able to get a photo ID in the past [@citeVoterIDPaper]. This spreadsheet was then turned into a dataset, which is available on Dataverse [@citedataverse].
 
 ### Cleaned Map Dataset
 ```cleaned_map_data.csv```
 
-One half of the dataset comes ```cleaned_reason_data.csv``` while the other half comes from the "County Map - StratMap_County_poly" dataset, which is available on Texas Open Data Portal [@citeTexasMapData]. The dataset contains geometry data (also known as "the_geom" in the dataset) that reconstructs a map of Texas and it also reconstructs the boundaries of Texas' counties (also called "county" in the dataset). These boundaries coordinates were obtained by the Texas Open Data Portal team [@citeTexasMapData] using the United States Geological Survey's digital 7.5 minute Topology Maps, who obtain their data from satellites every 3 years [@citeUSGS]. 
+One half of the dataset comes ```cleaned_reason_data.csv``` while the other half comes from the "County Map - StratMap_County_poly" dataset, which is available on the Texas Open Data Portal [@citeTexasMapData]. The dataset contains geometry data (also known as "the_geom" in the dataset) that reconstructs a map of Texas and it also reconstructs the boundaries of Texas' counties (also called "county" in the dataset). These boundary coordinates were obtained by the Texas Open Data Portal team [@citeTexasMapData] using the United States Geological Survey's digital 7.5 minute Topology Maps, who obtain their data from satellites every 3 years [@citeUSGS]. 
 
 ## Methodology
 The datasets used in this paper were retrieved, simulated, cleaned, analyzed, and tested using the R programming language [@citeR], tidyverse [@citetidyverse], haven [@citehaven], knitr [@citeknitr], janitor [@citejanitor], dplyr [@citedplyr], ggplot2 [@citeggplot2], sf [@citesf], readr [@citereadr], dataverse [@citedataverse], and ggpubr [@citeggpubr]. 
@@ -76,10 +79,10 @@ For the Reason dataset, a new column called "white" was constructed to indicate 
 
 # Results {#sec-result}
 
-## Texas females who voted without a photo ID during 2016 United States election
+## Texas females who voted without a photo ID during 2016 United States election {#sec-femalevoters}
 ```{R}
 #| label: tbl-femaleratio
-#| tbl-cap: Percentage of Texas Voters who are female versus not female who voted in 2016 United States election without a photo ID. 
+#| tbl-cap: Percent of Texas Voters who are female versus not female who voted in 2016 United States election without a photo ID. 
 #| echo: false
 #| warning: false
 #| message: false
@@ -150,7 +153,7 @@ ggplot(cleaned_map_data) +
 
 ```{r}
 #| label: tbl-femalevotermap
-#| tbl-cap: Number of female voters across Texas counties during 2016 United States election without a photo ID.  The left column are the five county names with the most number of female voters without a photo ID. The right column is the number of female voters for each county. 
+#| tbl-cap: Number of female voters across Texas counties during 2016 United States election without a photo ID.  The left column contains the five county names with the most number of female voters without a photo ID. The right column is the number of female voters for each county. 
 #| echo: false
 #| warning: false
 #| message: false
@@ -185,19 +188,19 @@ texas_county |>
   summary() |>
   kable()
 ```
-@tbl-femaleratio reveals 57% of Texas voters who filled out the RID from our dataset, which contains 16104 observations, were females while 43% were not females. From @fig-femalevotermap and @tbl-femalevotermap, the five counties with the largest number of female voters who did not present a photo ID at the polling place in 2016 are Harris (1570 voters), Travis (1207 voters), Dallas (752 voters), Collin (518 voters), Tarrant (442 voters), and Hidalgo (355 voters). 
+@tbl-femaleratio reveals that 57% of Texas voters who filled out the RID from our dataset, which contains 16104 observations, were females while 43% were not females. From @fig-femalevotermap and @tbl-femalevotermap, the five counties with the largest number of female voters who did not present a photo ID at the polling place in 2016 are Harris (1570 voters), Travis (1207 voters), Dallas (752 voters), Collin (518 voters), Tarrant (442 voters), and Hidalgo (355 voters). 
 
-We will first define the following: mean means the average value amongst the dataset, median means the data point found in the middle of a dataset, and the standard deviation is how far are values from the mean of a dataset. According to @tbl-femalevoterstats, the mean number of female voters without a photo ID across different counties was 36 voters, the median was 4 voters, and the standard deviation is 144 people. 
+We will first define the following: mean means the average value amongst the dataset, median means the data point found in the middle of a dataset, and the standard deviation is how far are values from the mean of a dataset. According to @tbl-femalevoterstats, the mean number of female voters without a photo ID across different counties was 36 voters, the median was 4 voters, and the standard deviation was 144 people. 
 
-In @fig-femalevotermap, these counties are in a lighter colour, indicating a higher number of female voters who filled out RIDs. However, Travis and Harris are light blue compared to Dallas, which is a dark blue. When looking at the difference in female voters between Travis and Dallas, they have a gap of 455 voters. To understand the numbers, we will look at the counties' population numbers in 2016 and median income from 2012 to 2016 that are provided by the U.S. Census Bureau. The counties' population on June 1, 2016 are the following: Harris (4,617,041), Travis (1,204,582), Dallas (2,587,462), Collin (942,453), Tarrant (2,021,746), and Hidalgo (850,187) [@citecountypop]. When looking at the population numbers, the populations of Harris, Travis, and Dallas are greater than one million in 2016. The percent (rounded to two decimal places) of each county's population who are female voters that filled out a RID are 0.03% for Harris, 0.10% for Travis, and Dallas, Collin, Tarrant and Hidalgo are under 0.01%. This reveals that Travis had the largest percent of female voters without a photo ID. 
+In @fig-femalevotermap, these counties are in a lighter colour, indicating a higher number of female voters who filled out RIDs. However, Travis and Harris are light blue compared to Dallas, which is dark blue. When looking at the difference in female voters between Travis and Dallas, they have a gap of 455 voters. To understand the numbers, we will look at the counties' population numbers in 2016 and median income from 2012 to 2016 that are provided by the U.S. Census Bureau. The counties' population on June 1, 2016, are the following: Harris (4,617,041), Travis (1,204,582), Dallas (2,587,462), Collin (942,453), Tarrant (2,021,746), and Hidalgo (850,187) [@citecountypop]. When looking at the population numbers, the populations of Harris, Travis, and Dallas were greater than one million in 2016. The percent (rounded to two decimal places) of each county's population who are female voters that filled out a RID are 0.03% for Harris, 0.10% for Travis, and Dallas, Collin, Tarrant and Hidalgo are under 0.01%. This reveals that Travis had the largest percent of female voters without a photo ID. 
 
-Now with median income, the counties' median incomes from 2012 to 2016 are \$55,584 for Harris, \$64,422 for Travis, \$51,411 for Dallas, \$86,188 for Collin, \$60,373 for Tarrant, and \$36,094 for Hidalgo with Texas' average median income being \$55,508 [@citecountyincome]. The average median income of the five counties are above the median income except for Dallas and Hidalgo. 
+Now with median income, the counties' median incomes from 2012 to 2016 are \$55,584 for Harris, \$64,422 for Travis, \$51,411 for Dallas, \$86,188 for Collin, \$60,373 for Tarrant, and \$36,094 for Hidalgo with Texas' average median income being \$55,508 [@citecountyincome]. The average median incomes of the five counties are above the median income except for Dallas and Hidalgo. 
 
 \newpage
-## Texas females who voted without a photo ID during 2016 United States election (Across Race)
+## Texas females who voted without a photo ID during 2016 United States election (Across Race) {#sec-femalevotersrace}
 ```{r}
 #| label: fig-femaleracevotermap
-#| fig-cap: Number of female voters of different race across Texas counties during 2016 United States election without a photo ID
+#| fig-cap: Number of female voters of different races across Texas counties during 2016 United States election without a photo ID
 #| echo: false
 #| warning: false
 #| message: false
@@ -347,7 +350,7 @@ ggarrange(female_white_graph, female_black_graph, female_asian_graph,
 ```
 ```{r}
 #| label: tbl-whitefemalecounty
-#| tbl-cap: Number of White female voters of different race across Texas counties during 2016 United States election without a photo ID. The left column are the five county names with the most number of White female voters without a photo ID. The right column is the number of White female voters for each county. 
+#| tbl-cap: Number of White female voters of different races across Texas counties during 2016 United States election without a photo ID. The left column contains the five county names with the most number of White female voters without a photo ID. The right column is the number of White female voters for each county. 
 #| echo: false
 #| warning: false
 #| message: false
@@ -367,7 +370,7 @@ texas_county |>
 
 ```{r}
 #| label: tbl-asianfemalecounty
-#| tbl-cap: Number of Asian female voters of different race across Texas counties during 2016 United States election without a photo ID. The left column are the five county names with the most number of Asian female voters without a photo ID. The right column is the number of Asian female voters for each county. 
+#| tbl-cap: Number of Asian female voters of different races across Texas counties during 2016 United States election without a photo ID. The left column contains the five county names with the most number of Asian female voters without a photo ID. The right column is the number of Asian female voters for each county. 
 #| echo: false
 #| warning: false
 #| message: false
@@ -387,7 +390,7 @@ texas_county |>
 
 ```{r}
 #| label: tbl-blackfemalecounty
-#| tbl-cap: Number of Black female voters of different race across Texas counties during 2016 United States election without a photo ID. The left column are the five county names with the most number of Black female voters without a photo ID. The right column is the number of Black female voters for each county. 
+#| tbl-cap: Number of Black female voters of different races across Texas counties during 2016 United States election without a photo ID. The left column contains the five county names with the most number of Black female voters without a photo ID. The right column is the number of Black female voters for each county. 
 #| echo: false
 #| warning: false
 #| message: false
@@ -406,7 +409,7 @@ texas_county |>
 ```
 ```{r}
 #| label: tbl-latinafemalecounty
-#| tbl-cap: Number of Latina female voters of different race across Texas counties during 2016 United States election without a photo ID. The left column are the five county names with the most number of Latina female voters without a photo ID. The right column is the number of Latina female voters for each county. 
+#| tbl-cap: Number of Latina female voters of different races across Texas counties during 2016 United States election without a photo ID. The left column contains the five county names with the most number of Latina female voters without a photo ID. The right column is the number of Latina female voters for each county. 
 #| echo: false
 #| warning: false
 #| message: false
@@ -441,14 +444,14 @@ texas_county |>
   kable()
 ```
 
-@fig-femaleracevotermap shows the number of female voters who did not have  a photo ID in Texas of the following groups: White, Black, Asian, and Latina. @fig-femaleracevotermap, @tbl-blackfemalecounty, and @tbl-whitefemalecounty reveals that for White and Black females, most female voters who filled out a RID were mostly in Denton, Travis, and Harris. @tbl-latinafemalecounty, @tbl-asianfemalecounty, and @fig-femaleracevotermap shows Hidalgo, Harris, and Dallas had the largest number of Latina voters fill out a RID while Harris, Travis, and Collin had the largest number of Asian female voters who filled out a RID. 
+@fig-femaleracevotermap shows the number of female voters who did not have a photo ID in Texas of the following groups: White, Black, Asian, and Latina. @fig-femaleracevotermap, @tbl-blackfemalecounty, and @tbl-whitefemalecounty reveal that for White and Black females, most female voters who filled out a RID were mostly in Denton, Travis, and Harris. @tbl-latinafemalecounty, @tbl-asianfemalecounty, and @fig-femaleracevotermap show Hidalgo, Harris, and Dallas had the largest number of Latina voters fill out a RID while Harris, Travis, and Collin had the largest number of Asian female voters who filled out a RID. 
 
-When comparing the mean and median from @tbl-femalevoterstats to @tbl-whitefemalecounty and @tbl-latinafemalecounty, the five counties with the most number of White female and Latina who filled out a RID are above the mean and median number of female voters who filed out a RID. When observing @tbl-blackfemalecounty and @tbl-femalevoterstats, the number of Black female who filled out a RID was above the mean (36 voters) and median number of female voters (4 voters) who filled out a RID in the counties Harris, Dallas, Tarrant, Travis, and Fort Bend. However, with Denton, the number of Black females who filled out a RID (32 voters) were below the mean (36 voters) and above the median (4 voters) number of female voters who completed a RID. @tbl-femalevoterstats and @tbl-asianfemalecounty reveals that Harris, which had the most number of Asian female voters without a photo ID at 40 voters, is above the mean and median of 36 voters and 4 voters respectively. However for the other four counties like Travis, the number of Asian female voters without a photo ID was below the mean but above the median. 
+When comparing the mean and median from @tbl-femalevoterstats to @tbl-whitefemalecounty and @tbl-latinafemalecounty, the five counties with the most number of White female and Latina who filled out a RID are above the mean and median number of female voters who filed out a RID. When observing @tbl-blackfemalecounty and @tbl-femalevoterstats, the number of Black females who filled out a RID was above the mean (36 voters) and median number of female voters (4 voters) who filled out a RID in the counties Harris, Dallas, Tarrant, Travis, and Fort Bend. However, with Denton, the number of Black females who filled out a RID (32 voters) was below the mean (36 voters) and above the median (4 voters) number of female voters who completed a RID. @tbl-femalevoterstats and @tbl-asianfemalecounty reveal that Harris, which had the most number of Asian female voters without a photo ID at 40 voters, is above the mean and median of 36 voters and 4 voters respectively. However, for the other four counties like Travis, the number of Asian female voters without a photo ID was below the mean but above the median. 
 
-Taking a look at @tbl-femalevoterracestats, we see that the mean and median for White, Asian, Black and Latina females are below the mean and median of the number of female voters across Texas who filled out an RID. However, White females had a median of 2 voters while other groups of females had a median of 0. White females also has the highest mean number of voters who filled out an RID at 21 voters, followed by Latina with 7 voters and Black females with 5 voters, and Asian females had the smallest mean at 1 voter.   
+Taking a look at @tbl-femalevoterracestats, we see that the mean and median for White, Asian, Black and Latina females are below the mean and median of the number of female voters across Texas who filled out an RID. However, White females had a median of 2 voters while other groups of females had a median of 0. White females also have the highest mean number of voters who filled out an RID at 21 voters, followed by Latina with 7 voters, Black females with 5 voters, and Asian females had the smallest mean at 1 voter.   
 \newpage
 
-## Reasons of Texas females across different race without a photo ID during 2016 United States election
+## Reasons of Texas females across different races without a photo ID during 2016 United States election {#sec-femalevotersbarriers}
 
 ```{r}
 #| include: false
@@ -648,7 +651,7 @@ combined_figure_A1_data <- rbind(combined_figure_A1_data, figure_A1_rep_asian_da
 
 ```{r}
 #| label: fig-femaleracebarriers
-#| fig-cap: Impediments of female voters of different race across Texas counties during 2016 United States election without a photo ID
+#| fig-cap: Impediments of female voters of different races across Texas counties during 2016 United States election without a photo ID
 #| echo: false
 #| warning: false
 #| message: false
@@ -669,19 +672,20 @@ combined_figure_A1_data |>
   # Referenced code from https://github.com/tidyverse/ggplot2/issues/2762
   # to figure out how to put labels on the left and use facet_grid
   facet_grid(vars(race), switch = "y") +
+  geom_col(fill="orange") +
   guides(x = guide_axis(angle = 0), ) +
   theme(plot.title = element_text(size = 9, face = "bold"),
         axis.title=element_text(size = 9, face = "bold"),
         axis.text.y = element_text(size = 7)) + 
   ggtitle("Reasons female voters in Texas had no photo ID in 2016")
 ```
-@fig-femaleracebarriers and @tbl-femaleracebarriers reveals the RID options that was selected by female voters who were unable to present a photo ID at the polling place. @fig-femaleracebarriers and @tbl-femaleracebarriers shows that for Asian females and White females, the option that was most commonly selected was "Other Reason", which made up 47% and 38% of their RIDs, respectively. For Black female and Latina voters, "ID was lost or stolen" was the most common reason at 30% and 38% of their RIDs. 
+@fig-femaleracebarriers and @tbl-femaleracebarriers reveal the RID options that were selected by female voters who were unable to present a photo ID at the polling place. @fig-femaleracebarriers and @tbl-femaleracebarriers show that for Asian females and White females, the option that was most commonly selected was "Other Reason", which made up 47% and 38% of their RIDs, respectively. For Black female and Latina voters, "ID was lost or stolen" was the most common reason at 30% and 38% of their RIDs. 
 
 A difference between what @citeVoterIDPaper found and our result is that in terms of the commonly cited reason is that  @citeVoterIDPaper found that Black voters cited "Other Reason" and ID was Lost or Stolen equally in 30% of their RIDs. In our results as seen in  @tbl-femaleracebarriers and  @fig-femaleracebarriers, "Other Reason" was selected less, which composed 29% of RIDs from Black female voters. 
 
 ```{r}
 #| label: fig-femaleraceotherbarriers
-#| fig-cap: Other impediments of female voters of different race across Texas counties during 2016 United States election without an ID
+#| fig-cap: Other impediments of female voters of different races across Texas counties during 2016 United States election without an ID
 #| echo: false
 #| warning: false
 #| message: false
@@ -852,6 +856,7 @@ combined_figure_A3_data |>
   # to figure out how to put labels on the left and use facet_grid
   facet_grid(vars(race), switch = "y") +
   guides(x = guide_axis(angle = 0), ) +
+  geom_col(fill="lightblue",colour="lightblue") +
   theme(plot.title = element_text(size = 9, face = "bold"),
         axis.title=element_text(size = 9, face = "bold")) + 
   ggtitle("Other reasons female voters in Texas had no ID in 2016 by race")
@@ -859,7 +864,7 @@ combined_figure_A3_data |>
 
 ```{r}
 #| label: tbl-femaleraceotherbarriers
-#| tbl-cap: Other impediments of female voters of different race across Texas counties during 2016 United States election without a photo ID
+#| tbl-cap: Other impediments of female voters of different races across Texas counties during 2016 United States election without a photo ID
 #| echo: false
 #| warning: false
 #| message: false
@@ -868,11 +873,29 @@ combined_figure_A3_data |>
 combined_figure_A3_data |>
   kable()
 ```
-@fig-femaleraceotherbarriers and @tbl-femaleraceotherbarriers shows the percent of the type of reasons that was given by female voters who selected the "Other Reason" option in the RID. @tbl-femaleraceotherbarriers and @fig-femaleraceotherbarriers reveals that for Asian females who selected this option, their most common reasons was related to "Relocation" (at 47%). For Black females, their most common reasons was related to "ID-Capable" and "Hardship" at 34% for each. For Latinas, their most common reason was related to "ID-Capable) at 46% and for White females, it was "Hardship" at 33%. These results are also seen in @citeVoterIDPaper's study with Black, Latinx, and White voters in Texas for the barriers mentioned in the "Other Reason" option. 
+@fig-femaleraceotherbarriers and @tbl-femaleraceotherbarriers show the percent of the type of reasons that were given by female voters who selected the "Other Reason" option in the RID. @tbl-femaleraceotherbarriers and @fig-femaleraceotherbarriers reveal that for Asian females who selected this option, their most common reasons were related to "Relocation" (at 47%). For Black females, their most common reasons were related to "ID-Capable" and "Hardship" at 34% for each. For Latinas, their most common reason was related to "ID-Capable) at 46% and for White females, it was "Hardship" at 33%. These results are also seen in @citeVoterIDPaper's study with Black, Latinx, and White voters in Texas for the barriers mentioned in the "Other Reason" option.
 
+\newpage
 # Discussion
+## Females versus Non-females and county turnout rates
+From @sec-femalevoters, we found that 57% of the RIDs that were collected were filled out by females. This suggests that strict ID laws impact females the most. We also found that highly populated counties like Harris, Travis, and Dallas, had the largest percentage of female voters without valid photo IDs during the 2016 US election. The reason this could be the case is due to the counties' large populations and thus there being more women who would want to vote but are unable to with strict ID laws. The large population could also mean that information is spread about the RIDs and the relaxation of the ID law. 
 
+@sec-femalevotersbarriers showed that Harris, Travis, and Dallas show up in the top five counties with the largest number of women who voted without a valid ID for different groups of women voters who filled out an RID. This could be due to them being one of the more diverse counties and according to @citeVoterIDPaper could mean that women, especially from historically disadvantaged groups, feel less hostility to go to polling places after the 2011 Texas Voter ID law [@citesdiversecounty]. 
 
+## Barriers of women across different races
+We found that White women mostly selected "Other reasons" in their RIDs with their specific reason being "Hardship". For Latinas and Black women, most selected "ID was lost or stolen" and for Asian women most selected "Other reasons" and specified "Relocation" reasons. This is also seen in @citeVoterIDPaper's paper on voters who are Black, Latinx, and White.
+
+## Fewer minority women filled out the RID 
+In @sec-femalevotersbarriers, the majority of the women who filled out a RID were white with a mean number of 21 voters while the mean number of Asian female, Black female, and Latina voters was 1 voter, 5 voters, and 7 voters, respectively. These numbers could be attributed to the fact that some women protested against the strict Texas laws and some were not aware that Texas lightened its voting law [@citeVoterIDPaper; @citeunableobtainid]. 
+
+Historically, minority groups like Black people, were denied access to hospitals in the US and therefore many were born at home without a birth certificate [@citeunableobtainid]. Therefore, there are cases where older women from historically disadvantaged groups were unable to fill out the RID in 2016 due to them not having a birth certificate, which could explain the gap we see between White women and minority women [@citeunableobtainid]. Black women were also legally not allowed to vote in Texas until the 1960s and therefore women from minority groups might have been more hesitant to vote during the 2016 United States election [@citesuffrage]. 
+
+## Areas of Improvement
+
+We faced several limitations during our analysis. One of the limitations is that the datasets we used are not necessarily accurate with reality. In the reason dataset that was used in this paper that was provided by @citeVoterIDPaper, race was predicted by the authors since they were not indicated in the RIDs. This means that the actual race of the person each row in the dataset corresponds to may not be reflected in the dataset. Since @citeVoterIDPaper and their research assistants inputted the data but hand, human error may have occurred, which includes a reason and the county name being inputted incorrectly on purpose or by mistake. 
+
+## Next steps
+Further investigation could be conducted on the reasons why some women in Texas did not vote during the 2016 US election. Another investigation could be made into the age of women who voted in the 2016 US election by filling out a RID as well.
 
 \newpage
 
@@ -881,7 +904,7 @@ combined_figure_A3_data |>
 # Appendix {-}
 
 ## Acknowledgments 
-I would like to acknowledge @citetellingstorieswithdata for some of the R code used in this paper to produce the tables and graphs. 
+We would like to acknowledge @citetellingstorieswithdata for some of the R code used in this paper to produce the tables and graphs. 
 
 ## Datasets Used {#sec-datasetused}
 Due to the length of the datasets horizontally, presenting glimpses of the datasets was not possible in the paper. However, the cleaned datasets that was used can be found here: https://github.com/moonsdust/voting/tree/main/data/analysis_data.
