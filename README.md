@@ -1,4 +1,4 @@
-# Voting
+# During the 2016 United States Election, Minority Women are Negatively Impacted by Texas' Strict Voter ID Law and It Needs to Be Fixed
 
 ## Overview
 
